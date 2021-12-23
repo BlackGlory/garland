@@ -1,0 +1,22 @@
+no-subpath:
+  $condition: 'condition'
+
+no-condition:
+  subpath:
+
+shallow-condition:
+  $condition: 'shallow-condition'
+  subpath:
+
+deep-condition:
+  subpath:
+    $condition: 'deep-condition'
+
+multiple-conditions:
+  $condition: 'shallow-condition'
+
+  subpath-a:
+    $condition: 'deep-condition-a'
+
+  subpath-b:
+    $condition: 'deep-condition-b'

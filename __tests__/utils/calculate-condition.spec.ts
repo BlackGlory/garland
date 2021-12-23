@@ -1,6 +1,12 @@
 import { calculateCondition } from '@utils/calculate-condition'
 
 describe('calculateCondition', () => {
+  test('empty', () => {
+    const condition = ''
+
+    expect(calculateCondition(condition, [])).toBe(false)
+  })
+
   test('and', () => {
     const condition = 'a and b'
 

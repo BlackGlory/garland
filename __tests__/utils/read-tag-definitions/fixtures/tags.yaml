@@ -1,0 +1,12 @@
+example1.com:
+  owner1:
+    repo1: [tag1, tag2]
+
+  owner2:
+    repo2: [tag2, tag3]
+
+example2.com:
+  owner3:
+    repo3: [tag3, tag4]
+
+example3.com/owner4/repo4: [tag4, tag5]

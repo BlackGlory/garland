@@ -171,7 +171,9 @@ class ConditionInterpreter extends BaseCstVisitor {
   }
 }
 
-export function calculateCondition(condition: string, tags: string[]) {
+export function calculateCondition(condition: string, tags: string[]): boolean {
+  if (/^\s*$/.test(condition)) return false
+
   const lexingResult = ConditionLexer.tokenize(condition)
 
   parser.input = lexingResult.tokens
