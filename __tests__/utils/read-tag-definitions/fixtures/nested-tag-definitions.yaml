@@ -8,5 +8,3 @@ example1.com:
 example2.com:
   owner3:
     repo3: [tag3, tag4]
-
-example3.com/owner4/repo4: [tag4, tag5]

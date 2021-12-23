@@ -1,0 +1,3 @@
+example1.com/owner1/repo1: [tag1, tag2]
+example1.com/owner2/repo2: [tag2, tag3]
+example2.com/owner3/repo3: [tag3, tag4]

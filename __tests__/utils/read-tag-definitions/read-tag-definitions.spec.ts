@@ -1,14 +1,25 @@
 import { readTagDefinitions } from '@utils/read-tag-definitions'
 import * as path from 'path'
 
-test('readTagDefinitions', async () => {
-  const tags = await readTagDefinitions(getFixtureFilename('tags.yaml'))
+describe('readTagDefinitions', () => {
+  test('nested tag definitions', async () => {
+    const tags = await readTagDefinitions(getFixtureFilename('nested-tag-definitions.yaml'))
 
-  expect(tags).toStrictEqual({
-    [path.normalize('example1.com/owner1/repo1')]: ['tag1', 'tag2']
-  , [path.normalize('example1.com/owner2/repo2')]: ['tag2', 'tag3']
-  , [path.normalize('example2.com/owner3/repo3')]: ['tag3', 'tag4']
-  , [path.normalize('example3.com/owner4/repo4')]: ['tag4', 'tag5']
+    expect(tags).toStrictEqual({
+      [path.normalize('example1.com/owner1/repo1')]: ['tag1', 'tag2']
+    , [path.normalize('example1.com/owner2/repo2')]: ['tag2', 'tag3']
+    , [path.normalize('example2.com/owner3/repo3')]: ['tag3', 'tag4']
+    })
+  })
+
+  test('flat tag definitions', async () => {
+    const tags = await readTagDefinitions(getFixtureFilename('flat-tag-definitions.yaml'))
+
+    expect(tags).toStrictEqual({
+      [path.normalize('example1.com/owner1/repo1')]: ['tag1', 'tag2']
+    , [path.normalize('example1.com/owner2/repo2')]: ['tag2', 'tag3']
+    , [path.normalize('example2.com/owner3/repo3')]: ['tag3', 'tag4']
+    })
   })
 })
 
