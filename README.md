@@ -83,32 +83,43 @@ Example:
 ```yaml
 # Create a folder `match-condition` and link all items that match condition `tag` there.
 match-condition:
-  $condition: 'tag'
+  $condition: tag
 
 # Just create a folder `no-condition`.
 no-condition:
 
 # Create a folder `match-condition/subpath` and link all items that match condition `tag` there.
 match-condition:
-  $condition: 'tag'
+  $condition: tag
   subpath:
-# Same as
+# Equivalent to 
 match-condition:
   subpath:
-    $condition: 'tag'
-# Same as
+    $condition: tag
+# Equivalent to 
 match-condition/subpath:
-  $condition: 'tag'
+  $condition: tag
 
 # Create folder `mulitple-conditions/subpath-a` and `multiple-conditions/subpath-b`.
-# Link all items that match condition `(tag) and (tag-a)` there.
-# Link all items that match condition `(tag) and (tag-b)` there.
+# Link all items that match condition `common-tag and tag-a` to `mulitple-conditions/subpath-a`.
+# Link all items that match condition `common-tag and tag-b` to `mulitple-conditions/subpath-b`.
 multiple-conditions:
-  $condition: 'tag'
+  $condition: common-tag
   subpath-a:
-    $condition: 'tag-a'
+    $condition: tag-a
   subpath-b:
-    $condition: 'tag-b'
+    $condition: tag-b
+# Equivalent to 
+multiple-conditions:
+  subpath-a:
+    $condition: common-tag and tag-a
+  subpath-b:
+    $condition: common-tag and tag-b
+# Equivalent to 
+multiple-conditions/subpath-a:
+  $condition: common-tag and tag-a
+multiple-conditions/subpath-b:
+  $condition: common-tag and tag-b
 ```
 
 ## Condition expression
