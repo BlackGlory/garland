@@ -1,10 +1,10 @@
 # garland
-Folder hierarchy builder based on tags and symbolic links.
+A folder hierarchy builder based on tags and symbolic links.
 
 ```
 Usage: garland [options] [command]
 
-Folder hierarchy builder based on tags and symbolic links
+A folder hierarchy builder based on tags and symbolic links
 
 Options:
   -V, --version                 output the version number

@@ -1,7 +1,7 @@
 {
   "name": "garland",
   "version": "0.1.0",
-  "description": "Folder hierarchy builder based on tags and symbolic links",
+  "description": "A folder hierarchy builder based on tags and symbolic links",
   "keywords": [],
   "bin": {
     "garland": "lib/cli.js"
