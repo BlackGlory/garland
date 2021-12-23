@@ -60,6 +60,7 @@
     "ajv": "^8.8.2",
     "chevrotain": "^9.1.0",
     "commander": "^8.3.0",
+    "extra-filesystem": "^0.4.1",
     "iterable-operator": "^0.14.4",
     "js-yaml": "^4.1.0"
   }
