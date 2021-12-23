@@ -1,0 +1,7 @@
+no-subpath:
+  $condition: 'condition'
+
+no-condition/subpath:
+
+condition/subpath:
+  $condition: 'condition'

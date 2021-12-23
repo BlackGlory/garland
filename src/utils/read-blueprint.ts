@@ -67,7 +67,7 @@ function flatBlueprint(
 }
 
 function composeConditions(conditions: string[]): string {
-  return conditions
-    .map(x => `(${x})`)
-    .join(' and ')
+  if (conditions.length === 0) return ''
+  if (conditions.length === 1) return conditions[0]
+  return conditions.map(x => `(${x})`).join(' and ')
 }
