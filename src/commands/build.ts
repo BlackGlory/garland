@@ -3,6 +3,7 @@ import { readTagDefinitions } from '@utils/read-tag-definitions'
 import { calculateCondition } from '@utils/calculate-condition'
 import { ensureDir } from 'extra-filesystem'
 import { mapKeys } from '@utils/map-keys'
+import { isObject } from '@blackglory/types'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 
@@ -24,10 +25,17 @@ export async function build({
 
     for (const [sourcePathname, tags] of Object.entries(tagDefinintions)) {
       if (calculateCondition(condition, tags)) {
-        await fs.symlink(
-          sourcePathname
-        , path.join(targetPathname, path.basename(sourcePathname))
-        )
+        try {
+          const pathname = path.join(targetPathname, path.basename(sourcePathname))
+          await fs.symlink(sourcePathname, pathname)
+          console.log(`${pathname}: linked`)
+        } catch (e) {
+          if (isObject(e) && e.code === 'EEXIST') {
+            console.log(`${targetPathname}: already exists`)
+          } else {
+            throw e
+          }
+        }
       }
     }
   }
