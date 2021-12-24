@@ -24,6 +24,14 @@ describe('readBlueprint', () => {
     , [path.normalize('condition/subpath')]: 'condition'
     })
   })
+
+  test('top-level $condition', async () => {
+    const blueprint = await readBlueprint(getFixtureFilename('top-level-condition.yaml'))
+
+    expect(blueprint).toStrictEqual({
+      [path.normalize('path')]: 'condition'
+    })
+  })
 })
 
 function getFixtureFilename(filename: string): string {

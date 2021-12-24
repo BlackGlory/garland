@@ -2,8 +2,7 @@ import Ajv from 'ajv/dist/2020.js'
 
 const ajv = new Ajv()
 const schema = {
-  type: 'object'
-, additionalProperties: { $ref: '#/$defs/path' }
+  $ref: '#/$defs/path'
 , $defs: {
     path: {
       oneOf: [

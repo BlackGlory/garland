@@ -5,12 +5,9 @@ import { toArray } from 'iterable-operator'
 import { isNull } from '@blackglory/types'
 import * as path from 'path'
 
-interface IBlueprint {
-  [path: string]:
-  | { $condition?: string }
-  | { [subpath: string]: IBlueprint | null }
-  | null
-}
+type IBlueprint =
+| { $condition?: string }
+| { [path: string]: IBlueprint | null }
 
 export async function readBlueprint(
   filename: string
