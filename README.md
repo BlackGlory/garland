@@ -72,10 +72,8 @@ the logic `and` is implicitly included.
 Structure:
 ```ts
 interface IBlueprint {
-  [path: string]: {
-    $condition?: string
-    [path: string]: IBlueprint | null 
-  } | null
+  $condition?: string
+  [path: string]: IBlueprint | null
 }
 ```
 
