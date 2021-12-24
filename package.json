@@ -1,6 +1,6 @@
 {
   "name": "garland",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A folder hierarchy builder based on tags and symbolic links",
   "keywords": [],
   "bin": {

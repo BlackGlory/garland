@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/BlackGlory/garland/compare/v0.1.0...v0.1.1) (2021-12-24)
+
+
+### Bug Fixes
+
+* handle EEXIST error ([1441d98](https://github.com/BlackGlory/garland/commit/1441d98c52f723fe0365bd73b9df896369bedb2b))
+
 ## 0.1.0 (2021-12-23)
 
 
