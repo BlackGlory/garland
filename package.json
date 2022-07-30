@@ -4,10 +4,10 @@
   "description": "A folder hierarchy builder based on tags and symbolic links",
   "keywords": [],
   "bin": {
-    "garland": "lib/cli.js"
+    "garland": "dist/cli.cjs"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "repository": "git@github.com:BlackGlory/garland.git",
   "author": "BlackGlory <woshenmedoubuzhidao@blackglory.me>",
@@ -17,22 +17,23 @@
   },
   "scripts": {
     "deduplicate": "yarn-deduplicate",
+    "prepublishOnly": "run-s clean build bundle",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --quiet src",
     "test": "jest --config jest.config.js",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --config jest.config.js",
     "dev": "ts-node -r tsconfig-paths/register src/cli.ts",
     "dev:debug": "node --inspect-brk node_modules/.bin/ts-node -r tsconfig-paths/register src/cli.ts",
-    "prepublishOnly": "run-s clean build",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib dist",
     "build": "run-s build:*",
     "build:compile": "tsc --project tsconfig.build.json",
     "build:patch": "tscpaths -p tsconfig.build.json -s ./src -o ./lib",
-    "start": "serve dist",
+    "bundle": "webpack --stats-error-details",
+    "smoke": "node dist/cli.cjs --help",
     "release": "standard-version"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "run-s lint build test",
+      "pre-commit": "run-s clean lint build test bundle smoke",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -55,6 +56,8 @@
     "tsconfig-paths": "^3.12.0",
     "tscpaths": "^0.0.9",
     "typescript": "^4.5.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
     "yarn-deduplicate": "^5.0.0"
   },
   "dependencies": {
