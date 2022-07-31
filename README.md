@@ -1,6 +1,14 @@
 # garland
 A folder hierarchy builder based on tags and symbolic links.
 
+## Install
+```sh
+npm install -g garland
+# or
+yarn add garland
+```
+
+## Usage
 ```
 Usage: garland [options] [command]
 
@@ -16,13 +24,6 @@ Commands:
   build <blueprint>             build folder hierarchy
   test <expression>             test condition expression
   help [command]                display help for command
-```
-
-## Install
-```sh
-npm install -g garland
-# or
-yarn add garland
 ```
 
 ## Tag definitions file
