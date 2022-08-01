@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/BlackGlory/garland/compare/v0.1.4...v0.1.5) (2022-08-01)
+
+
+### Features
+
+* set process.title ([cbf9898](https://github.com/BlackGlory/garland/commit/cbf989827b3a7333d478aa4fa795f754495eca53))
+
 ### [0.1.4](https://github.com/BlackGlory/garland/compare/v0.1.3...v0.1.4) (2022-07-30)
 
 
