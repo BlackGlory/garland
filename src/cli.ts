@@ -8,10 +8,13 @@ interface IGlobalOptions {
   tagDefinitions: string
 }
 
+const { name, version, description } = require('../package.json')
+process.title = name
+
 program
-  .name(require('../package.json').name)
-  .version(require('../package.json').version)
-  .description(require('../package.json').description)
+  .name(name)
+  .version(version)
+  .description(description)
   .requiredOption('--tag-definitions <filename>', 'tag definitions file')
 
 program
