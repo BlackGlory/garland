@@ -1,4 +1,5 @@
 import { readTagDefinitions } from '@utils/read-tag-definitions'
+import { compareNumbersDescending } from 'extra-sort'
 
 export async function tags({ tagDefinitionsFilename }: {
   tagDefinitionsFilename: string
@@ -7,7 +8,7 @@ export async function tags({ tagDefinitionsFilename }: {
   const tagStats = getTagStats(tagDefinintions)
   const sortedTags = Object.entries(tagStats)
     .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) => compareNumbersDescending(a.count, b.count))
   const report = sortedTags
     .map(({ name, count }) => `${name}(${count})`)
     .join(' ')
