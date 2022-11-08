@@ -47,4 +47,13 @@ describe('calculateCondition', () => {
     expect(calculateCondition(condition, [])).toBe(false)
     expect(calculateCondition(condition, ['a'])).toBe(true)
   })
+
+  test('edge: expression', () => {
+    const condition = 'a and (b xor c)'
+
+    expect(calculateCondition(condition, ['a'])).toBe(false)
+    expect(calculateCondition(condition, ['a', 'b'])).toBe(true)
+    expect(calculateCondition(condition, ['a', 'c'])).toBe(true)
+    expect(calculateCondition(condition, ['a', 'b', 'c'])).toBe(false)
+  })
 })
