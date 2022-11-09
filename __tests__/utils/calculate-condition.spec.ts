@@ -48,10 +48,19 @@ describe('calculateCondition', () => {
     expect(calculateCondition(condition, ['a'])).toBe(true)
   })
 
-  test('edge: expression', () => {
+  test('edge: multiple expressions', () => {
     const condition = 'a and (b xor c)'
 
     expect(calculateCondition(condition, ['a'])).toBe(false)
+    expect(calculateCondition(condition, ['a', 'b'])).toBe(true)
+    expect(calculateCondition(condition, ['a', 'c'])).toBe(true)
+    expect(calculateCondition(condition, ['a', 'b', 'c'])).toBe(false)
+  })
+
+  test('edge: operator precedence', () => {
+    const condition = 'a xor b and c'
+
+    expect(calculateCondition(condition, ['a'])).toBe(true)
     expect(calculateCondition(condition, ['a', 'b'])).toBe(true)
     expect(calculateCondition(condition, ['a', 'c'])).toBe(true)
     expect(calculateCondition(condition, ['a', 'b', 'c'])).toBe(false)
