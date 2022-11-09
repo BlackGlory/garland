@@ -20,15 +20,15 @@ interface INodePatternWithContext<
   (tokens: Token[], context?: IContext): INodePatternMatch<Node> | Falsy
 }
 
-function* parseNodes(
+const parseNodes: INodePatternWithContext<Node> = (
   tokens: Token[]
-, context: IContext
-): IterableIterator<INodePatternMatch<Node>> {
+, context: IContext = { excludePatterns: [] }
+) => {
   for (const pattern of nodePatterns) {
     if (!context.excludePatterns.includes(pattern)) {
       const result = pattern(tokens, context)
       if (isntFalsy(result)) {
-        yield result
+        return result
       }
     }
   }
@@ -38,23 +38,21 @@ const parseOrExpression: INodePatternWithContext<IOrExpression> = (
   tokens
 , context: IContext = { excludePatterns: [] }
 ) => {
-  for (const leftValue of parseNodes(tokens, {
+  const leftValue = parseNodes(tokens, {
     ...context
   , excludePatterns: [...context.excludePatterns, parseOrExpression]
-  })) {
-    if (isntFalsy(leftValue)) {
-      if (tokens[leftValue.consumed]?.type === 'Or') {
-        const restTokens = tokens.slice(leftValue.consumed + 1)
-        for (const rightValue of parseNodes(restTokens, {
-          excludePatterns: []
-        })) {
-          return {
-            consumed: leftValue.consumed + 1 + rightValue.consumed
-          , node: {
-              type: 'OrExpression'
-            , left: leftValue.node
-            , right: rightValue.node
-            }
+  })
+  if (isntFalsy(leftValue)) {
+    if (tokens[leftValue.consumed]?.type === 'Or') {
+      const restTokens = tokens.slice(leftValue.consumed + 1)
+      const rightValue = parseNodes(restTokens, { excludePatterns: [] })
+      if (isntFalsy(rightValue)) {
+        return {
+          consumed: leftValue.consumed + 1 + rightValue.consumed
+        , node: {
+            type: 'OrExpression'
+          , left: leftValue.node
+          , right: rightValue.node
           }
         }
       }
@@ -66,23 +64,23 @@ const parseXorExpression: INodePatternWithContext<IXorExpression> = (
   tokens
 , context: IContext = { excludePatterns: [] }
 ) => {
-  for (const leftValue of parseNodes(tokens, {
+  const leftValue = parseNodes(tokens, {
     ...context
   , excludePatterns: [...context.excludePatterns, parseXorExpression]
-  })) {
-    if (isntFalsy(leftValue)) {
-      if (tokens[leftValue.consumed]?.type === 'Xor') {
-        const restTokens = tokens.slice(leftValue.consumed + 1)
-        for (const rightValue of parseNodes(restTokens, {
-          excludePatterns: []
-        })) {
-          return {
-            consumed: leftValue.consumed + 1 + rightValue.consumed
-          , node: {
-              type: 'XorExpression'
-            , left: leftValue.node
-            , right: rightValue.node
-            }
+  })
+  if (isntFalsy(leftValue)) {
+    if (tokens[leftValue.consumed]?.type === 'Xor') {
+      const restTokens = tokens.slice(leftValue.consumed + 1)
+      const rightValue = parseNodes(restTokens, {
+        excludePatterns: []
+      })
+      if (isntFalsy(rightValue)) {
+        return {
+          consumed: leftValue.consumed + 1 + rightValue.consumed
+        , node: {
+            type: 'XorExpression'
+          , left: leftValue.node
+          , right: rightValue.node
           }
         }
       }
@@ -94,23 +92,23 @@ const parseAndExpression: INodePatternWithContext<IAndExpression> = (
   tokens
 , context: IContext = { excludePatterns: [] }
 ) => {
-  for (const leftValue of parseNodes(tokens, {
+  const leftValue = parseNodes(tokens, {
     ...context
   , excludePatterns: [...context.excludePatterns, parseAndExpression]
-  })) {
-    if (isntFalsy(leftValue)) {
-      if (tokens[leftValue.consumed]?.type === 'And') {
-        const restTokens = tokens.slice(leftValue.consumed + 1)
-        for (const rightValue of parseNodes(restTokens, {
-          excludePatterns: []
-        })) {
-          return {
-            consumed: leftValue.consumed + 1 + rightValue.consumed
-          , node: {
-              type: 'AndExpression'
-            , left: leftValue.node
-            , right: rightValue.node
-            }
+  })
+  if (isntFalsy(leftValue)) {
+    if (tokens[leftValue.consumed]?.type === 'And') {
+      const restTokens = tokens.slice(leftValue.consumed + 1)
+      const rightValue = parseNodes(restTokens, {
+        excludePatterns: []
+      })
+      if (isntFalsy(rightValue)) {
+        return {
+          consumed: leftValue.consumed + 1 + rightValue.consumed
+        , node: {
+            type: 'AndExpression'
+          , left: leftValue.node
+          , right: rightValue.node
           }
         }
       }
@@ -121,9 +119,10 @@ const parseAndExpression: INodePatternWithContext<IAndExpression> = (
 const parseNotExpression: INodePatternWithContext<INotExpression> = tokens => {
   const [firstToken, ...restTokens] = tokens
   if (firstToken?.type === 'Not') {
-    for (const rightValue of parseNodes(restTokens, {
+    const rightValue = parseNodes(restTokens, {
       excludePatterns: []
-    })) {
+    })
+    if (isntFalsy(rightValue)) {
       return {
         consumed: 1 + rightValue.consumed
       , node: {
@@ -138,9 +137,10 @@ const parseNotExpression: INodePatternWithContext<INotExpression> = tokens => {
 const parseParenthesisExpression: INodePatternWithContext<Node> = tokens => {
   const [firstToken, ...restTokens] = tokens
   if (firstToken?.type === 'LeftParenthesis') {
-    for (const value of parseNodes(restTokens, {
+    const value = parseNodes(restTokens, {
       excludePatterns: []
-    })) {
+    })
+    if (isntFalsy(value)) {
       if (tokens[value.consumed + 1]?.type === 'RightParenthesis') {
         return {
           consumed: 1 + value.consumed + 1
