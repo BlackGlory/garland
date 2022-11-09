@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/BlackGlory/garland/compare/v0.1.6...v0.1.7) (2022-11-09)
+
+
+### Bug Fixes
+
+* edge cases ([b42cfcb](https://github.com/BlackGlory/garland/commit/b42cfcb02e84bbf95228c23e13c665d44080840c))
+* edge cases ([25a9343](https://github.com/BlackGlory/garland/commit/25a9343adaba7629c4d23af80fdfb3f90375258d))
+
 ### [0.1.6](https://github.com/BlackGlory/garland/compare/v0.1.5...v0.1.6) (2022-09-12)
 
 ### [0.1.5](https://github.com/BlackGlory/garland/compare/v0.1.4...v0.1.5) (2022-08-01)
