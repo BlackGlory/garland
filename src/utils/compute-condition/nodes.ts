@@ -1,31 +1,15 @@
 import { INode } from 'extra-parser'
+import { IUnaryOperatorExpression, IBinaryOperatorExpression, IValueExpression } from './utils'
 
 export type Node =
-| IIdentifier
-| IOrExpression
-| IXorExpression
-| IAndExpression
-| INotExpression
+| IdentifierExpression
+| OrExpression
+| XorExpression
+| AndExpression
+| NotExpression
 
-export interface IIdentifier extends INode<'Identifier'> {
-  value: string
-}
-
-export interface IOrExpression extends INode<'OrExpression'> {
-  left: Node
-  right: Node
-}
-
-export interface IXorExpression extends INode<'XorExpression'> {
-  left: Node
-  right: Node
-}
-
-export interface IAndExpression extends INode<'AndExpression'> {
-  left: Node
-  right: Node
-}
-
-export interface INotExpression extends INode<'NotExpression'> {
-  right: Node
-}
+export type IdentifierExpression = IValueExpression<'IdentifierExpression', string>
+export type OrExpression = IBinaryOperatorExpression<'OrExpression', Node, Node>
+export type XorExpression = IBinaryOperatorExpression<'XorExpression', Node, Node>
+export type AndExpression = IBinaryOperatorExpression<'AndExpression', Node, Node>
+export type NotExpression = IUnaryOperatorExpression<'NotExpression', Node>

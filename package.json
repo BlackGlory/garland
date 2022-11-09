@@ -70,7 +70,7 @@
     "extra-parser": "^0.2.4",
     "extra-sort": "^0.1.1",
     "extra-utils": "^3.3.0",
-    "iterable-operator": "^2.2.0",
+    "iterable-operator": "^2.3.0",
     "js-yaml": "^4.1.0"
   }
 }

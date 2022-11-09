@@ -7,11 +7,11 @@ import { nodePatterns } from './node-patterns'
 import { Token } from './tokens'
 import {
   Node
-, IAndExpression
-, IIdentifier
-, INotExpression
-, IOrExpression
-, IXorExpression
+, AndExpression
+, IdentifierExpression
+, NotExpression
+, OrExpression
+, XorExpression
 } from './nodes'
 
 interface IContext {
@@ -48,31 +48,31 @@ function computeNode(context: IContext, node: Node): boolean {
     case 'OrExpression': return computeOrExpression(context, node)
     case 'XorExpression': return computeXorExpression(context, node)
     case 'NotExpression': return computeNotExpression(context, node)
-    case 'Identifier': return computeIdentifier(context, node)
+    case 'IdentifierExpression': return computeIdentifier(context, node)
   }
 }
 
-function computeAndExpression(context: IContext, node: IAndExpression): boolean {
+function computeAndExpression(context: IContext, node: AndExpression): boolean {
   return computeNode(context, node.left)
       && computeNode(context, node.right)
 }
 
-function computeOrExpression(context: IContext, node: IOrExpression): boolean {
+function computeOrExpression(context: IContext, node: OrExpression): boolean {
   return computeNode(context, node.left)
       || computeNode(context, node.right)
 }
 
-function computeXorExpression(context: IContext, node: IXorExpression): boolean {
+function computeXorExpression(context: IContext, node: XorExpression): boolean {
   const leftValue = computeNode(context, node.left)
   const rightValue = computeNode(context, node.right)
   return (leftValue && !rightValue)
       || (!leftValue && rightValue)
 }
 
-function computeNotExpression(context: IContext, node: INotExpression): boolean {
+function computeNotExpression(context: IContext, node: NotExpression): boolean {
   return !computeNode(context, node.right)
 }
 
-function computeIdentifier(context: IContext, node: IIdentifier): boolean {
+function computeIdentifier(context: IContext, node: IdentifierExpression): boolean {
   return context.tags.includes(node.value)
 }
