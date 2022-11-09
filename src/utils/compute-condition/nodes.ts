@@ -7,6 +7,10 @@ export type Node =
 | IAndExpression
 | INotExpression
 
+export interface IIdentifier extends INode<'Identifier'> {
+  value: string
+}
+
 export interface IOrExpression extends INode<'OrExpression'> {
   left: Node
   right: Node
@@ -24,8 +28,4 @@ export interface IAndExpression extends INode<'AndExpression'> {
 
 export interface INotExpression extends INode<'NotExpression'> {
   right: Node
-}
-
-export interface IIdentifier extends INode<'Identifier'> {
-  value: string
 }

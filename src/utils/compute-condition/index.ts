@@ -4,6 +4,7 @@ import { toArray, filter } from 'iterable-operator'
 import { pipe } from 'extra-utils'
 import { tokenPatterns } from './token-patterns'
 import { nodePatterns } from './node-patterns'
+import { Token } from './tokens'
 import {
   Node
 , IAndExpression
@@ -19,13 +20,13 @@ interface IContext {
 
 export function computeCondition(condition: string, tags: string[]): boolean {
   const tokens = pipe(
-    tokenize(condition, tokenPatterns)
+    tokenize<Token>(condition, tokenPatterns)
   , iter => filter(iter, isntWhiteSpace)
   , iter => toArray(iter)
   )
   if (tokens.length === 0) return false
 
-  const expressions = toArray(parse(tokens, nodePatterns))
+  const expressions = toArray(parse<Token, Node>(tokens, nodePatterns))
   assert(expressions.length === 1, 'The condition contains an invliad expression')
 
   const [expression] = expressions

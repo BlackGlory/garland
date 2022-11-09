@@ -6,8 +6,8 @@ import {
 , Not
 , Xor
 , WhiteSpace
-, LeftParenthese
-, RightParenthese
+, LeftParenthesis
+, RightParenthesis
 } from './tokens'
 
 export const tokenizeIdentifier = createTokenPatternFromRegExp<Identifier>(
@@ -34,11 +34,11 @@ export const tokenizeWhiteSpace = createTokenPatternFromRegExp<WhiteSpace>(
   'WhiteSpace'
 , /\s+/
 )
-export const tokenizeLeftParenthesis = createTokenPatternFromRegExp<LeftParenthese>(
+export const tokenizeLeftParenthesis = createTokenPatternFromRegExp<LeftParenthesis>(
   'LeftParenthesis'
 , /\(/
 )
-export const tokenizeRightParenthesis = createTokenPatternFromRegExp<RightParenthese>(
+export const tokenizeRightParenthesis = createTokenPatternFromRegExp<RightParenthesis>(
   'RightParenthesis'
 , /\)/
 )

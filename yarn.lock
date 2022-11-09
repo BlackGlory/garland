@@ -2942,10 +2942,10 @@ extra-lazy@^1.1.1, extra-lazy@^1.3.1:
   resolved "https://registry.yarnpkg.com/extra-lazy/-/extra-lazy-1.3.1.tgz#f8d74084e8806a6c1906ef292b4d6834e0b35517"
   integrity sha512-C55Cr/dQWQHdwuMTF+ySNMYqydVclmKdgFHoC/8gTu5Zoe1Nrx6jgArwfZ+7jKU78VjDfhrkGAJ38ucf0lozeQ==
 
-extra-parser@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/extra-parser/-/extra-parser-0.2.2.tgz#4854d9a9f4afd1cfdc76b2f8e9d0a11a5876ef43"
-  integrity sha512-xLzA6plyRqbAwbCPxxMTcNMHZVNkp+DK6vXWN9P2mLxU6gjXNjpD/WVHaPAqca/xiRz+JuWR6J6WFjYjVH2uOg==
+extra-parser@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/extra-parser/-/extra-parser-0.2.4.tgz#874b50b50b95bfd313f5ca793f89df95a3d59208"
+  integrity sha512-Q7Bk62snwci+Pj9VmIzp1IdzfHq7lI6VPcR9LmrlnR3kuyhys7jwGNJIDSGGy+PjOhyMyX7CtB6uI0b7YK5rEw==
   dependencies:
     "@blackglory/prelude" "^0.1.8"
 
