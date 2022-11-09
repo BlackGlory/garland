@@ -1,21 +1,27 @@
-import { IToken, INodePattern, INodePatternMatch } from 'extra-parser'
+import { IToken, INode, INodePattern, INodePatternMatch } from 'extra-parser'
 import { Falsy, isntFalsy } from '@blackglory/prelude'
-import { Node, INotExpression, IIdentifier } from './nodes'
+import { Node, IOrExpression, INotExpression, IIdentifier, IAndExpression, IXorExpression } from './nodes'
 
-interface INodePatternWithExclude extends INodePattern<IToken<string>, Node> {
+interface IContext {
+  excludePatterns: Array<INodePattern<IToken<string>, Node>>
+}
+
+interface INodePatternWithContext<
+  Node extends INode<string>
+> extends INodePattern<IToken<string>, Node> {
   (
     tokens: Array<IToken<string>>
-  , excludePatterns?: Array<INodePattern<IToken<string>, Node>>
+  , context?: IContext
   ): INodePatternMatch<Node> | Falsy
 }
 
-const parseExpression = (
-  tokens: Array<IToken<string>>
-, excludePatterns: INodePatternWithExclude[]
-): INodePatternMatch<Node> | Falsy => {
+const parseNode: INodePatternWithContext<Node> = (
+  tokens
+, context: IContext = { excludePatterns: [] }
+) => {
   for (const pattern of nodePatterns) {
-    if (!excludePatterns.includes(pattern)) {
-      const result = pattern(tokens, excludePatterns)
+    if (!context.excludePatterns.includes(pattern)) {
+      const result = pattern(tokens, context)
       if (isntFalsy(result)) {
         return result
       }
@@ -23,15 +29,20 @@ const parseExpression = (
   }
 }
 
-const parseOrExpression: INodePatternWithExclude = (
+const parseOrExpression: INodePatternWithContext<IOrExpression> = (
   tokens
-, excludePatterns: Array<INodePattern<IToken<string>, Node>> = []
+, context: IContext = { excludePatterns: [] }
 ) => {
-  const leftValue = parseExpression(tokens, [...excludePatterns, parseOrExpression])
+  const leftValue = parseNode(tokens, {
+    ...context
+  , excludePatterns: [...context.excludePatterns, parseOrExpression]
+  })
   if (isntFalsy(leftValue)) {
     if (tokens[leftValue.consumed]?.type === 'Or') {
       const restTokens = tokens.slice(leftValue.consumed + 1)
-      const rightValue = parseExpression(restTokens, [])
+      const rightValue = parseNode(restTokens, {
+        excludePatterns: []
+      })
       if (isntFalsy(rightValue)) {
         return {
           consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -46,15 +57,20 @@ const parseOrExpression: INodePatternWithExclude = (
   }
 }
 
-const parseXorExpression: INodePatternWithExclude = (
+const parseXorExpression: INodePatternWithContext<IXorExpression> = (
   tokens
-, excludePatterns: Array<INodePattern<IToken<string>, Node>> = []
+, context: IContext = { excludePatterns: [] }
 ) => {
-  const leftValue = parseExpression(tokens, [...excludePatterns, parseXorExpression])
+  const leftValue = parseNode(tokens, {
+    ...context
+  , excludePatterns: [...context.excludePatterns, parseXorExpression]
+  })
   if (isntFalsy(leftValue)) {
     if (tokens[leftValue.consumed]?.type === 'Xor') {
       const restTokens = tokens.slice(leftValue.consumed + 1)
-      const rightValue = parseExpression(restTokens, [])
+      const rightValue = parseNode(restTokens, {
+        excludePatterns: []
+      })
       if (isntFalsy(rightValue)) {
         return {
           consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -69,15 +85,20 @@ const parseXorExpression: INodePatternWithExclude = (
   }
 }
 
-const parseAndExpression: INodePatternWithExclude = (
+const parseAndExpression: INodePatternWithContext<IAndExpression> = (
   tokens
-, excludePatterns: Array<INodePattern<IToken<string>, Node>> = []
+, context: IContext = { excludePatterns: [] }
 ) => {
-  const leftValue = parseExpression(tokens, [...excludePatterns, parseAndExpression])
+  const leftValue = parseNode(tokens, {
+    ...context
+  , excludePatterns: [...context.excludePatterns, parseAndExpression]
+  })
   if (isntFalsy(leftValue)) {
     if (tokens[leftValue.consumed]?.type === 'And') {
       const restTokens = tokens.slice(leftValue.consumed + 1)
-      const rightValue = parseExpression(restTokens, [])
+      const rightValue = parseNode(restTokens, {
+        excludePatterns: []
+      })
       if (isntFalsy(rightValue)) {
         return {
           consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -92,13 +113,12 @@ const parseAndExpression: INodePatternWithExclude = (
   }
 }
 
-const parseNotExpression: INodePattern<
-  IToken<string>
-, INotExpression
-> = tokens => {
+const parseNotExpression: INodePatternWithContext<INotExpression> = tokens => {
   const [firstToken, ...restTokens] = tokens
   if (firstToken?.type === 'Not') {
-    const result = parseExpression(restTokens, [])
+    const result = parseNode(restTokens, {
+      excludePatterns: []
+    })
     if (isntFalsy(result)) {
       return {
         consumed: 1 + result.consumed
@@ -111,13 +131,12 @@ const parseNotExpression: INodePattern<
   }
 }
 
-const parseParenthesisExpression: INodePattern<
-  IToken<string>
-, Node
-> = tokens => {
+const parseParenthesisExpression: INodePatternWithContext<Node> = tokens => {
   const [firstToken, ...restTokens] = tokens
   if (firstToken?.type === 'LeftParenthesis') {
-    const result = parseExpression(restTokens, [])
+    const result = parseNode(restTokens, {
+      excludePatterns: []
+    })
     if (isntFalsy(result)) {
       if (tokens[result.consumed + 1]?.type === 'RightParenthesis') {
         return {
@@ -129,7 +148,7 @@ const parseParenthesisExpression: INodePattern<
   }
 }
 
-const parseIdentifier: INodePattern<IToken<string>, IIdentifier> = tokens => {
+const parseIdentifier: INodePatternWithContext<IIdentifier> = tokens => {
   const [firstToken] = tokens
   if (firstToken?.type === 'Identifier') {
     return {
@@ -143,7 +162,7 @@ const parseIdentifier: INodePattern<IToken<string>, IIdentifier> = tokens => {
 }
 
 // 模式解析的顺序将决定运算符的优先级
-export const nodePatterns: INodePatternWithExclude[] = [
+export const nodePatterns: Array<INodePatternWithContext<Node>> = [
   parseParenthesisExpression
 , parseNotExpression
 , parseAndExpression
