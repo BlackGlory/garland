@@ -22,40 +22,26 @@ interface INodePatternWithContext<
   (tokens: Token[], context?: IContext): INodePatternMatch<Node> | Falsy
 }
 
-const parseNodes: INodePatternWithContext<Node> = (
-  tokens: Token[]
-, context: IContext = { excludePatterns: [] }
-) => {
-  for (const pattern of nodePatterns) {
-    if (!context.excludePatterns.includes(pattern)) {
-      const result = pattern(tokens, context)
-      if (isntFalsy(result)) {
-        return result
-      }
-    }
-  }
-}
-
 const parseOrExpression: INodePatternWithContext<IOrExpression> = (
   tokens
 , context: IContext = { excludePatterns: [] }
 ) => {
   for (const indexOfOrToken of findAllIndexes(tokens, x => x.type === 'Or')) {
     const leftTokens = tokens.slice(0, indexOfOrToken)
-    const leftValue = parseNodes(leftTokens, {
+    for (const leftValue of parseNodes(leftTokens, {
       ...context
     , excludePatterns: [...context.excludePatterns, parseOrExpression]
-    })
-    if (isntFalsy(leftValue)) {
-      const rightTokens = tokens.slice(indexOfOrToken + 1)
-      const rightValue = parseNodes(rightTokens, { excludePatterns: [] })
-      if (isntFalsy(rightValue)) {
-        return {
-          consumed: leftValue.consumed + 1 + rightValue.consumed
-        , node: {
-            type: 'OrExpression'
-          , left: leftValue.node
-          , right: rightValue.node
+    })) {
+      if (leftValue.consumed === indexOfOrToken) {
+        const rightTokens = tokens.slice(leftValue.consumed + 1)
+        for (const rightValue of parseNodes(rightTokens, { excludePatterns: [] })) {
+          return {
+            consumed: leftValue.consumed + 1 + rightValue.consumed
+          , node: {
+              type: 'OrExpression'
+            , left: leftValue.node
+            , right: rightValue.node
+            }
           }
         }
       }
@@ -69,20 +55,20 @@ const parseXorExpression: INodePatternWithContext<IXorExpression> = (
 ) => {
   for (const indexOfXorToken of findAllIndexes(tokens, x => x.type === 'Xor')) {
     const leftTokens = tokens.slice(0, indexOfXorToken)
-    const leftValue = parseNodes(leftTokens, {
+    for (const leftValue of parseNodes(leftTokens, {
       ...context
     , excludePatterns: [...context.excludePatterns, parseXorExpression]
-    })
-    if (isntFalsy(leftValue)) {
-      const restTokens = tokens.slice(indexOfXorToken + 1)
-      const rightValue = parseNodes(restTokens, { excludePatterns: [] })
-      if (isntFalsy(rightValue)) {
-        return {
-          consumed: leftValue.consumed + 1 + rightValue.consumed
-        , node: {
-            type: 'XorExpression'
-          , left: leftValue.node
-          , right: rightValue.node
+    })) {
+      if (leftValue.consumed === indexOfXorToken) {
+        const restTokens = tokens.slice(leftValue.consumed + 1)
+        for (const rightValue of parseNodes(restTokens, { excludePatterns: [] })) {
+          return {
+            consumed: leftValue.consumed + 1 + rightValue.consumed
+          , node: {
+              type: 'XorExpression'
+            , left: leftValue.node
+            , right: rightValue.node
+            }
           }
         }
       }
@@ -96,20 +82,20 @@ const parseAndExpression: INodePatternWithContext<IAndExpression> = (
 ) => {
   for (const indexOfAndToken of findAllIndexes(tokens, x => x.type === 'And')) {
     const leftTokens = tokens.slice(0, indexOfAndToken)
-    const leftValue = parseNodes(leftTokens, {
+    for (const leftValue of parseNodes(leftTokens, {
       ...context
     , excludePatterns: [...context.excludePatterns, parseAndExpression]
-    })
-    if (isntFalsy(leftValue)) {
-      const rightTokens = tokens.slice(indexOfAndToken + 1)
-      const rightValue = parseNodes(rightTokens, { excludePatterns: [] })
-      if (isntFalsy(rightValue)) {
-        return {
-          consumed: leftValue.consumed + 1 + rightValue.consumed
-        , node: {
-            type: 'AndExpression'
-          , left: leftValue.node
-          , right: rightValue.node
+    })) {
+      if (leftValue.consumed === indexOfAndToken) {
+        const rightTokens = tokens.slice(leftValue.consumed + 1)
+        for (const rightValue of parseNodes(rightTokens, { excludePatterns: [] })) {
+          return {
+            consumed: leftValue.consumed + 1 + rightValue.consumed
+          , node: {
+              type: 'AndExpression'
+            , left: leftValue.node
+            , right: rightValue.node
+            }
           }
         }
       }
@@ -120,10 +106,7 @@ const parseAndExpression: INodePatternWithContext<IAndExpression> = (
 const parseNotExpression: INodePatternWithContext<INotExpression> = tokens => {
   const [firstToken, ...restTokens] = tokens
   if (firstToken?.type === 'Not') {
-    const rightValue = parseNodes(restTokens, {
-      excludePatterns: []
-    })
-    if (isntFalsy(rightValue)) {
+    for (const rightValue of parseNodes(restTokens, { excludePatterns: [] })) {
       return {
         consumed: 1 + rightValue.consumed
       , node: {
@@ -138,10 +121,7 @@ const parseNotExpression: INodePatternWithContext<INotExpression> = tokens => {
 const parseParenthesisExpression: INodePatternWithContext<Node> = tokens => {
   const [firstToken, ...restTokens] = tokens
   if (firstToken?.type === 'LeftParenthesis') {
-    const value = parseNodes(restTokens, {
-      excludePatterns: []
-    })
-    if (isntFalsy(value)) {
+    for (const value of parseNodes(restTokens, { excludePatterns: [] })) {
       if (tokens[value.consumed + 1]?.type === 'RightParenthesis') {
         return {
           consumed: 1 + value.consumed + 1
@@ -176,6 +156,20 @@ export const nodePatterns: Array<INodePatternWithContext<Node>> = [
 , parseParenthesisExpression
 , parseIdentifier
 ]
+
+function* parseNodes(
+  tokens: Token[]
+, context: IContext = { excludePatterns: [] }
+): IterableIterator<INodePatternMatch<Node>> {
+  for (const pattern of nodePatterns) {
+    if (!context.excludePatterns.includes(pattern)) {
+      const result = pattern(tokens, context)
+      if (isntFalsy(result)) {
+        yield result
+      }
+    }
+  }
+}
 
 function findAllIndexes<T>(
   iter: Iterable<T>
