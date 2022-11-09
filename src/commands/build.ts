@@ -1,9 +1,9 @@
 import { readBlueprint } from '@utils/read-blueprint'
 import { readTagDefinitions } from '@utils/read-tag-definitions'
-import { calculateCondition } from '@utils/calculate-condition'
+import { computeCondition } from '@utils/compute-condition'
 import { ensureDir } from 'extra-filesystem'
 import { mapKeys } from '@utils/map-keys'
-import { isObject } from '@blackglory/types'
+import { isObject } from '@blackglory/prelude'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 
@@ -24,7 +24,7 @@ export async function build({
     await ensureDir(targetPathname)
 
     for (const [sourcePathname, tags] of Object.entries(tagDefinintions)) {
-      if (calculateCondition(condition, tags)) {
+      if (computeCondition(condition, tags)) {
         try {
           const pathname = path.join(targetPathname, path.basename(sourcePathname))
           await fs.symlink(sourcePathname, pathname)

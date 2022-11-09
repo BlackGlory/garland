@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises'
 import * as YAML from 'js-yaml'
 import { validateTagDefinitions } from '@utils/validate-tag-definitions'
-import { isArray } from '@blackglory/types'
+import { isArray } from '@blackglory/prelude'
 import { toArray } from 'iterable-operator'
 import * as path from 'path'
 

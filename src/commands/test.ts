@@ -1,5 +1,5 @@
 import { readTagDefinitions } from '@utils/read-tag-definitions'
-import { calculateCondition } from '@utils/calculate-condition'
+import { computeCondition } from '@utils/compute-condition'
 
 export async function test({
   tagDefinitionsFilename
@@ -11,7 +11,7 @@ export async function test({
   const tagDefinintions = await readTagDefinitions(tagDefinitionsFilename)
 
   for (const [pathname, tags] of Object.entries(tagDefinintions)) {
-    if (calculateCondition(conditionExpression, tags)) {
+    if (computeCondition(conditionExpression, tags)) {
       console.log(pathname)
     }
   }
