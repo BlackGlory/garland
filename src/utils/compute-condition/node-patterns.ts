@@ -14,13 +14,14 @@ import {
 , createGroupedOperatorExpressionPattern
 , createUnaryOperatorExpressionPattern
 , createBinaryOperatorExpressionPattern
+, createEmptyContext
 , INodePatternWithContext
 , IContext
 } from './utils'
 
 const parseNode: INodePatternWithContext<Token, Node> = (
   tokens: Token[]
-, context: IContext<Token> = { excludePatterns: [] }
+, context: IContext<Token> = createEmptyContext()
 ): INodePatternMatch<Node> | Falsy => {
   for (const pattern of nodePatterns) {
     if (!context.excludePatterns.includes(pattern)) {

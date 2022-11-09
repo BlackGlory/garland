@@ -70,7 +70,7 @@ export function createGroupedOperatorExpressionPattern<
   return tokens => {
     const [firstToken, ...restTokens] = tokens
     if (firstToken?.type === leftTokenType) {
-      const result = parseNode(restTokens, { excludePatterns: [] })
+      const result = parseNode(restTokens, createEmptyContext())
       if (isntFalsy(result) && tokens[result.consumed + 1]?.type === rightTokenType) {
         return {
           consumed: 1 + result.consumed + 1
@@ -93,7 +93,7 @@ export function createUnaryOperatorExpressionPattern<
   return tokens => {
     const [firstToken, ...restTokens] = tokens
     if (firstToken?.type === tokenType) {
-      const rightValue = parseRightNode(restTokens, { excludePatterns: [] })
+      const rightValue = parseRightNode(restTokens, createEmptyContext())
       if (isntFalsy(rightValue)) {
         return {
           consumed: 1 + rightValue.consumed
@@ -123,7 +123,7 @@ export function createBinaryOperatorExpressionPattern<
 > {
   return function nodePattern(
     tokens: Token[]
-  , context: IContext<Token> = { excludePatterns: [] }
+  , context: IContext<Token> = createEmptyContext()
   ): INodePatternMatch<
     IBinaryOperatorExpression<Node['type'], Node['left'], Node['right']>
   > | Falsy {
@@ -135,7 +135,7 @@ export function createBinaryOperatorExpressionPattern<
       })
       if (isntFalsy(leftValue) && leftValue.consumed === indexOfToken) {
         const rightTokens = tokens.slice(leftValue.consumed + 1)
-        const rightValue = parseRightNode(rightTokens, { excludePatterns: [] })
+        const rightValue = parseRightNode(rightTokens, createEmptyContext())
         if (isntFalsy(rightValue)) {
           return {
             consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -149,4 +149,8 @@ export function createBinaryOperatorExpressionPattern<
       }
     }
   }
+}
+
+export function createEmptyContext<Token extends IToken<string>>(): IContext<Token> {
+  return { excludePatterns: [] }
 }
