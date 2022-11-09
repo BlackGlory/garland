@@ -26,12 +26,12 @@ export function computeCondition(condition: string, tags: string[]): boolean {
   )
   if (tokens.length === 0) return false
 
-  const expressions = toArray(parse<Token, Node>(tokens, nodePatterns))
-  assert(expressions.length === 1, 'The condition contains an invliad expression')
+  const nodes = toArray(parse<Token, Node>(tokens, nodePatterns))
+  assert(nodes.length === 1, 'The condition contains an invliad expression')
 
-  const [expression] = expressions
+  const [node] = nodes
   const context: IContext = { tags }
-  return computeExpression(context, expression as Node)
+  return computeNode(context, node)
 }
 
 function isWhiteSpace(token: IToken<string>): boolean {
@@ -42,7 +42,7 @@ function isntWhiteSpace(token: IToken<string>): boolean {
   return !isWhiteSpace(token)
 }
 
-function computeExpression(context: IContext, node: Node): boolean {
+function computeNode(context: IContext, node: Node): boolean {
   switch (node.type) {
     case 'AndExpression': return computeAndExpression(context, node)
     case 'OrExpression': return computeOrExpression(context, node)
@@ -53,24 +53,24 @@ function computeExpression(context: IContext, node: Node): boolean {
 }
 
 function computeAndExpression(context: IContext, node: IAndExpression): boolean {
-  return computeExpression(context, node.left)
-      && computeExpression(context, node.right)
+  return computeNode(context, node.left)
+      && computeNode(context, node.right)
 }
 
 function computeOrExpression(context: IContext, node: IOrExpression): boolean {
-  return computeExpression(context, node.left)
-      || computeExpression(context, node.right)
+  return computeNode(context, node.left)
+      || computeNode(context, node.right)
 }
 
 function computeXorExpression(context: IContext, node: IXorExpression): boolean {
-  const leftValue = computeExpression(context, node.left)
-  const rightValue = computeExpression(context, node.right)
+  const leftValue = computeNode(context, node.left)
+  const rightValue = computeNode(context, node.right)
   return (leftValue && !rightValue)
       || (!leftValue && rightValue)
 }
 
 function computeNotExpression(context: IContext, node: INotExpression): boolean {
-  return !computeExpression(context, node.right)
+  return !computeNode(context, node.right)
 }
 
 function computeIdentifier(context: IContext, node: IIdentifier): boolean {

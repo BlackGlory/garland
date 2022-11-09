@@ -164,12 +164,14 @@ const parseIdentifier: INodePatternWithContext<IIdentifier> = tokens => {
   }
 }
 
-// 模式解析的顺序将决定运算符的优先级
+// 模式解析的顺序将决定运算符的优先级, 这与运算符的优先级顺序相反:
+// 运算符的优先级越低, 它在AST里的位置距离根节点就越近.
+// 节点离根节点越近, 意味着其解析的时间点越早, 因此模式解析的优先级就越高.
 export const nodePatterns: Array<INodePatternWithContext<Node>> = [
-  parseNotExpression
-, parseAndExpression
+  parseOrExpression
 , parseXorExpression
-, parseOrExpression
+, parseAndExpression
+, parseNotExpression
 , parseParenthesisExpression
 , parseIdentifier
 ]
