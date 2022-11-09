@@ -11,7 +11,7 @@ import {
 , INotExpression
 , IOrExpression
 , IXorExpression
-} from './ast'
+} from './nodes'
 
 interface IContext {
   tags: string[]

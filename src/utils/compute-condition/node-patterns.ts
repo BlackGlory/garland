@@ -1,6 +1,6 @@
 import { IToken, INodePattern, INodePatternMatch } from 'extra-parser'
 import { Falsy, isntFalsy } from '@blackglory/prelude'
-import { Node, INotExpression, IIdentifier } from './ast'
+import { Node, INotExpression, IIdentifier } from './nodes'
 
 interface INodePatternWithExclude extends INodePattern<IToken<string>, Node> {
   (
