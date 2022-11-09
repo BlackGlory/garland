@@ -1,5 +1,7 @@
 import { INode, INodePattern, INodePatternMatch } from 'extra-parser'
 import { Falsy, isntFalsy } from '@blackglory/prelude'
+import { pipe } from 'extra-utils'
+import { map, filter } from 'iterable-operator'
 import { Token } from './tokens'
 import {
   Node
@@ -38,14 +40,15 @@ const parseOrExpression: INodePatternWithContext<IOrExpression> = (
   tokens
 , context: IContext = { excludePatterns: [] }
 ) => {
-  const leftValue = parseNodes(tokens, {
-    ...context
-  , excludePatterns: [...context.excludePatterns, parseOrExpression]
-  })
-  if (isntFalsy(leftValue)) {
-    if (tokens[leftValue.consumed]?.type === 'Or') {
-      const restTokens = tokens.slice(leftValue.consumed + 1)
-      const rightValue = parseNodes(restTokens, { excludePatterns: [] })
+  for (const indexOfOrToken of findAllIndexes(tokens, x => x.type === 'Or')) {
+    const leftTokens = tokens.slice(0, indexOfOrToken)
+    const leftValue = parseNodes(leftTokens, {
+      ...context
+    , excludePatterns: [...context.excludePatterns, parseOrExpression]
+    })
+    if (isntFalsy(leftValue)) {
+      const rightTokens = tokens.slice(indexOfOrToken + 1)
+      const rightValue = parseNodes(rightTokens, { excludePatterns: [] })
       if (isntFalsy(rightValue)) {
         return {
           consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -64,16 +67,15 @@ const parseXorExpression: INodePatternWithContext<IXorExpression> = (
   tokens
 , context: IContext = { excludePatterns: [] }
 ) => {
-  const leftValue = parseNodes(tokens, {
-    ...context
-  , excludePatterns: [...context.excludePatterns, parseXorExpression]
-  })
-  if (isntFalsy(leftValue)) {
-    if (tokens[leftValue.consumed]?.type === 'Xor') {
-      const restTokens = tokens.slice(leftValue.consumed + 1)
-      const rightValue = parseNodes(restTokens, {
-        excludePatterns: []
-      })
+  for (const indexOfXorToken of findAllIndexes(tokens, x => x.type === 'Xor')) {
+    const leftTokens = tokens.slice(0, indexOfXorToken)
+    const leftValue = parseNodes(leftTokens, {
+      ...context
+    , excludePatterns: [...context.excludePatterns, parseXorExpression]
+    })
+    if (isntFalsy(leftValue)) {
+      const restTokens = tokens.slice(indexOfXorToken + 1)
+      const rightValue = parseNodes(restTokens, { excludePatterns: [] })
       if (isntFalsy(rightValue)) {
         return {
           consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -92,16 +94,15 @@ const parseAndExpression: INodePatternWithContext<IAndExpression> = (
   tokens
 , context: IContext = { excludePatterns: [] }
 ) => {
-  const leftValue = parseNodes(tokens, {
-    ...context
-  , excludePatterns: [...context.excludePatterns, parseAndExpression]
-  })
-  if (isntFalsy(leftValue)) {
-    if (tokens[leftValue.consumed]?.type === 'And') {
-      const restTokens = tokens.slice(leftValue.consumed + 1)
-      const rightValue = parseNodes(restTokens, {
-        excludePatterns: []
-      })
+  for (const indexOfAndToken of findAllIndexes(tokens, x => x.type === 'And')) {
+    const leftTokens = tokens.slice(0, indexOfAndToken)
+    const leftValue = parseNodes(leftTokens, {
+      ...context
+    , excludePatterns: [...context.excludePatterns, parseAndExpression]
+    })
+    if (isntFalsy(leftValue)) {
+      const rightTokens = tokens.slice(indexOfAndToken + 1)
+      const rightValue = parseNodes(rightTokens, { excludePatterns: [] })
       if (isntFalsy(rightValue)) {
         return {
           consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -175,3 +176,15 @@ export const nodePatterns: Array<INodePatternWithContext<Node>> = [
 , parseParenthesisExpression
 , parseIdentifier
 ]
+
+function findAllIndexes<T>(
+  iter: Iterable<T>
+, predicate: (value: T, index: number) => boolean
+): IterableIterator<number> {
+  return pipe(
+    iter
+  , iter => map(iter, (x, i) => [x, i] as const)
+  , iter => filter(iter, ([x, i]) => predicate(x, i))
+  , iter => map(iter, ([x, i]) => i)
+  )
+}
