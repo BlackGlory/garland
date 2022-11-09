@@ -151,6 +151,27 @@ export function createBinaryOperatorExpressionPattern<
   }
 }
 
+export function createCompositePattern<
+  Token extends IToken<string>
+, Node extends INode<string>
+>(
+  nodePatterns: Array<INodePatternWithContext<Token, Node>>
+): INodePatternWithContext<Token, Node> {
+  return (
+    tokens
+  , context: IContext<Token> = createEmptyContext()
+  ) => {
+    for (const pattern of nodePatterns) {
+      if (!context.excludePatterns.includes(pattern)) {
+        const result = pattern(tokens, context)
+        if (isntFalsy(result)) {
+          return result
+        }
+      }
+    }
+  }
+}
+
 export function createEmptyContext<Token extends IToken<string>>(): IContext<Token> {
   return { excludePatterns: [] }
 }

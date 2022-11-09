@@ -1,5 +1,3 @@
-import { INodePatternMatch, IToken } from 'extra-parser'
-import { Falsy, isntFalsy } from '@blackglory/prelude'
 import { Token } from './tokens'
 import {
   Node
@@ -14,40 +12,16 @@ import {
 , createGroupedOperatorExpressionPattern
 , createUnaryOperatorExpressionPattern
 , createBinaryOperatorExpressionPattern
-, createEmptyContext
+, createCompositePattern
 , INodePatternWithContext
-, IContext
 } from './utils'
 
-const parseNode: INodePatternWithContext<Token, Node> = (
-  tokens: Token[]
-, context: IContext<Token> = createEmptyContext()
-): INodePatternMatch<Node> | Falsy => {
-  for (const pattern of nodePatterns) {
-    if (!context.excludePatterns.includes(pattern)) {
-      const result = pattern(tokens, context)
-      if (isntFalsy(result)) {
-        return result
-      }
-    }
-  }
-}
+// 模式解析的顺序将决定运算符的优先级, 这与运算符的优先级顺序相反:
+// 运算符的优先级越低, 它在AST里的位置距离根节点就越近.
+// 节点离根节点越近, 意味着其解析的时间点越早, 因此模式解析的优先级就越高.
+export const nodePatterns: Array<INodePatternWithContext<Token, Node>> = []
 
-const parseIdentifierExpression = createValueOperatorExpressionPattern<
-  Token
-, IdentifierExpression
-, string
->({
-  tokenType: 'Identifier'
-, nodeType: 'IdentifierExpression'
-, transform: x => x
-})
-
-const parseParenthesisExpression = createGroupedOperatorExpressionPattern<Token, Node>({
-  leftTokenType: 'LeftParenthesis'
-, rightTokenType: 'RightParenthesis'
-, parseNode
-})
+const parseNode = createCompositePattern(nodePatterns)
 
 const parseOrExpression = createBinaryOperatorExpressionPattern<
   Token
@@ -60,6 +34,8 @@ const parseOrExpression = createBinaryOperatorExpressionPattern<
 , parseLeftNode: parseNode
 , parseRightNode: parseNode
 })
+nodePatterns.push(parseOrExpression)
+
 const parseXorExpression = createBinaryOperatorExpressionPattern<
   Token
 , XorExpression
@@ -71,6 +47,8 @@ const parseXorExpression = createBinaryOperatorExpressionPattern<
 , parseLeftNode: parseNode
 , parseRightNode: parseNode
 })
+nodePatterns.push(parseXorExpression)
+
 const parseAndExpression = createBinaryOperatorExpressionPattern<
   Token
 , AndExpression
@@ -82,6 +60,7 @@ const parseAndExpression = createBinaryOperatorExpressionPattern<
 , parseLeftNode: parseNode
 , parseRightNode: parseNode
 })
+nodePatterns.push(parseAndExpression)
 
 const parseNotExpression = createUnaryOperatorExpressionPattern<
   Token
@@ -92,15 +71,22 @@ const parseNotExpression = createUnaryOperatorExpressionPattern<
 , nodeType: 'NotExpression'
 , parseRightNode: parseNode
 })
+nodePatterns.push(parseNotExpression)
 
-// 模式解析的顺序将决定运算符的优先级, 这与运算符的优先级顺序相反:
-// 运算符的优先级越低, 它在AST里的位置距离根节点就越近.
-// 节点离根节点越近, 意味着其解析的时间点越早, 因此模式解析的优先级就越高.
-export const nodePatterns: Array<INodePatternWithContext<Token, Node>> = [
-  parseOrExpression
-, parseXorExpression
-, parseAndExpression
-, parseNotExpression
-, parseParenthesisExpression
-, parseIdentifierExpression
-]
+const parseParenthesisExpression = createGroupedOperatorExpressionPattern<Token, Node>({
+  leftTokenType: 'LeftParenthesis'
+, rightTokenType: 'RightParenthesis'
+, parseNode
+})
+nodePatterns.push(parseParenthesisExpression)
+
+const parseIdentifierExpression = createValueOperatorExpressionPattern<
+  Token
+, IdentifierExpression
+, string
+>({
+  tokenType: 'Identifier'
+, nodeType: 'IdentifierExpression'
+, transform: x => x
+})
+nodePatterns.push(parseIdentifierExpression)
