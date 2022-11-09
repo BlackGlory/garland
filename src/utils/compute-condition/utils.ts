@@ -62,15 +62,15 @@ export function createValueOperatorExpressionPattern<
 export function createGroupedOperatorExpressionPattern<
   Token extends IToken<string>
 , Node extends INode<string>
->({ leftTokenType, rightTokenType, parseNode }: {
+>({ leftTokenType, rightTokenType, nodePattern }: {
   leftTokenType: string
   rightTokenType: string
-  parseNode: INodePatternWithContext<Token, Node>
+  nodePattern: INodePatternWithContext<Token, Node>
 }): INodePatternWithContext<Token, Node> {
   return tokens => {
     const [firstToken, ...restTokens] = tokens
     if (firstToken?.type === leftTokenType) {
-      const result = parseNode(restTokens, createEmptyContext())
+      const result = nodePattern(restTokens, createEmptyContext())
       if (isntFalsy(result) && tokens[result.consumed + 1]?.type === rightTokenType) {
         return {
           consumed: 1 + result.consumed + 1
@@ -85,15 +85,15 @@ export function createUnaryOperatorExpressionPattern<
   Token extends IToken<string>
 , Node extends IUnaryOperatorExpression<string, Right>
 , Right extends INode<string>
->({ tokenType, nodeType, parseRightNode }: {
+>({ tokenType, nodeType, rightNodePattern }: {
   tokenType: string
   nodeType: Node['type']
-  parseRightNode: INodePatternWithContext<Token, Right>
+  rightNodePattern: INodePatternWithContext<Token, Right>
 }): INodePatternWithContext<Token, IUnaryOperatorExpression<Node['type'], Node['right']>> {
   return tokens => {
     const [firstToken, ...restTokens] = tokens
     if (firstToken?.type === tokenType) {
-      const rightValue = parseRightNode(restTokens, createEmptyContext())
+      const rightValue = rightNodePattern(restTokens, createEmptyContext())
       if (isntFalsy(rightValue)) {
         return {
           consumed: 1 + rightValue.consumed
@@ -112,11 +112,11 @@ export function createBinaryOperatorExpressionPattern<
 , Node extends IBinaryOperatorExpression<string, Left, Right>
 , Left extends INode<string>
 , Right extends INode<string>
->({ tokenType, nodeType, parseRightNode, parseLeftNode }: {
+>({ tokenType, nodeType, rightNodePattern, leftNodePattern }: {
   tokenType: string
   nodeType: Node['type']
-  parseLeftNode: INodePatternWithContext<Token, Left>
-  parseRightNode: INodePatternWithContext<Token, Right>
+  leftNodePattern: INodePatternWithContext<Token, Left>
+  rightNodePattern: INodePatternWithContext<Token, Right>
 }): INodePatternWithContext<
   Token
 , IBinaryOperatorExpression<Node['type'], Node['left'], Node['right']>
@@ -129,13 +129,13 @@ export function createBinaryOperatorExpressionPattern<
   > | Falsy {
     for (const indexOfToken of findAllIndexes(tokens, x => x.type === tokenType)) {
       const leftTokens = tokens.slice(0, indexOfToken)
-      const leftValue = parseLeftNode(leftTokens, {
+      const leftValue = leftNodePattern(leftTokens, {
         ...context
       , excludePatterns: [...context.excludePatterns, nodePattern]
       })
       if (isntFalsy(leftValue) && leftValue.consumed === indexOfToken) {
         const rightTokens = tokens.slice(leftValue.consumed + 1)
-        const rightValue = parseRightNode(rightTokens, createEmptyContext())
+        const rightValue = rightNodePattern(rightTokens, createEmptyContext())
         if (isntFalsy(rightValue)) {
           return {
             consumed: leftValue.consumed + 1 + rightValue.consumed

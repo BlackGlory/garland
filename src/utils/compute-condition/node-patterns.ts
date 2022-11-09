@@ -21,9 +21,9 @@ import {
 // 节点离根节点越近, 意味着其解析的时间点越早, 因此模式解析的优先级就越高.
 export const nodePatterns: Array<INodePatternWithContext<Token, Node>> = []
 
-const parseNode = createCompositePattern(nodePatterns)
+const anyNodePattern = createCompositePattern(nodePatterns)
 
-const parseOrExpression = createBinaryOperatorExpressionPattern<
+const orExpressionPattern = createBinaryOperatorExpressionPattern<
   Token
 , OrExpression
 , Node
@@ -31,12 +31,12 @@ const parseOrExpression = createBinaryOperatorExpressionPattern<
 >({
   tokenType: 'Or'
 , nodeType: 'OrExpression'
-, parseLeftNode: parseNode
-, parseRightNode: parseNode
+, leftNodePattern: anyNodePattern
+, rightNodePattern: anyNodePattern
 })
-nodePatterns.push(parseOrExpression)
+nodePatterns.push(orExpressionPattern)
 
-const parseXorExpression = createBinaryOperatorExpressionPattern<
+const xorExpressionPattern = createBinaryOperatorExpressionPattern<
   Token
 , XorExpression
 , Node
@@ -44,12 +44,12 @@ const parseXorExpression = createBinaryOperatorExpressionPattern<
 >({
   tokenType: 'Xor'
 , nodeType: 'XorExpression'
-, parseLeftNode: parseNode
-, parseRightNode: parseNode
+, leftNodePattern: anyNodePattern
+, rightNodePattern: anyNodePattern
 })
-nodePatterns.push(parseXorExpression)
+nodePatterns.push(xorExpressionPattern)
 
-const parseAndExpression = createBinaryOperatorExpressionPattern<
+const andExpressionPattern = createBinaryOperatorExpressionPattern<
   Token
 , AndExpression
 , Node
@@ -57,30 +57,30 @@ const parseAndExpression = createBinaryOperatorExpressionPattern<
 >({
   tokenType: 'And'
 , nodeType: 'AndExpression'
-, parseLeftNode: parseNode
-, parseRightNode: parseNode
+, leftNodePattern: anyNodePattern
+, rightNodePattern: anyNodePattern
 })
-nodePatterns.push(parseAndExpression)
+nodePatterns.push(andExpressionPattern)
 
-const parseNotExpression = createUnaryOperatorExpressionPattern<
+const notExpressionPattern = createUnaryOperatorExpressionPattern<
   Token
 , NotExpression
 , Node
 >({
   tokenType: 'Not'
 , nodeType: 'NotExpression'
-, parseRightNode: parseNode
+, rightNodePattern: anyNodePattern
 })
-nodePatterns.push(parseNotExpression)
+nodePatterns.push(notExpressionPattern)
 
-const parseParenthesisExpression = createGroupedOperatorExpressionPattern<Token, Node>({
+const parenthesisExpressionPattern = createGroupedOperatorExpressionPattern<Token, Node>({
   leftTokenType: 'LeftParenthesis'
 , rightTokenType: 'RightParenthesis'
-, parseNode
+, nodePattern: anyNodePattern
 })
-nodePatterns.push(parseParenthesisExpression)
+nodePatterns.push(parenthesisExpressionPattern)
 
-const parseIdentifierExpression = createValueOperatorExpressionPattern<
+const identifierExpressionPattern = createValueOperatorExpressionPattern<
   Token
 , IdentifierExpression
 , string
@@ -89,4 +89,4 @@ const parseIdentifierExpression = createValueOperatorExpressionPattern<
 , nodeType: 'IdentifierExpression'
 , transform: x => x
 })
-nodePatterns.push(parseIdentifierExpression)
+nodePatterns.push(identifierExpressionPattern)

@@ -13,50 +13,50 @@ import {
 
 export const tokenPatterns: Array<ITokenPattern<Token>> = []
 
-export const tokenizeWhiteSpace = createTokenPatternFromRegExp<WhiteSpace>(
+export const whiteSpacePattern = createTokenPatternFromRegExp<WhiteSpace>(
   'WhiteSpace'
 , /\s+/
 )
-tokenPatterns.push(tokenizeWhiteSpace)
+tokenPatterns.push(whiteSpacePattern)
 
-export const tokenizeAnd = createTokenPatternFromRegExp<And>(
+export const andPattern = createTokenPatternFromRegExp<And>(
   'And'
 , /and/
 )
-tokenPatterns.push(tokenizeAnd)
+tokenPatterns.push(andPattern)
 
-export const tokenizeOr = createTokenPatternFromRegExp<Or>(
+export const orPattern = createTokenPatternFromRegExp<Or>(
   'Or'
 , /or/
 )
-tokenPatterns.push(tokenizeOr)
+tokenPatterns.push(orPattern)
 
-export const tokenizeNot = createTokenPatternFromRegExp<Not>(
+export const notPattern = createTokenPatternFromRegExp<Not>(
   'Not'
 , /not/
 )
-tokenPatterns.push(tokenizeNot)
+tokenPatterns.push(notPattern)
 
-export const tokenizeXor = createTokenPatternFromRegExp<Xor>(
+export const xorPattern = createTokenPatternFromRegExp<Xor>(
   'Xor'
 , /xor/
 )
-tokenPatterns.push(tokenizeXor)
+tokenPatterns.push(xorPattern)
 
-export const tokenizeLeftParenthesis = createTokenPatternFromRegExp<LeftParenthesis>(
+export const leftParenthesisPattern = createTokenPatternFromRegExp<LeftParenthesis>(
   'LeftParenthesis'
 , /\(/
 )
-tokenPatterns.push(tokenizeLeftParenthesis)
+tokenPatterns.push(leftParenthesisPattern)
 
-export const tokenizeRightParenthesis = createTokenPatternFromRegExp<RightParenthesis>(
+export const rightParenthesisPattern = createTokenPatternFromRegExp<RightParenthesis>(
   'RightParenthesis'
 , /\)/
 )
-tokenPatterns.push(tokenizeRightParenthesis)
+tokenPatterns.push(rightParenthesisPattern)
 
-export const tokenizeIdentifier = createTokenPatternFromRegExp<Identifier>(
+export const identifierPattern = createTokenPatternFromRegExp<Identifier>(
   'Identifier'
 , /[a-zA-Z0-9_-]+/
 )
-tokenPatterns.push(tokenizeIdentifier)
+tokenPatterns.push(identifierPattern)
