@@ -1,6 +1,6 @@
 import { IToken, INode, INodePattern, INodePatternMatch } from 'extra-parser'
 import { Falsy, isntFalsy } from '@blackglory/prelude'
-import { findAllIndexes } from 'iterable-operator'
+import { toArray, findAllIndexes } from 'iterable-operator'
 
 export interface IValueExpression<
   NodeType extends string
@@ -32,8 +32,8 @@ export interface IContext<Token extends IToken<string>> {
 export interface INodePatternWithContext<
   Token extends IToken<string>
 , Node extends INode<string>
-> extends INodePattern<Token, Node> {
-  (tokens: Token[], context?: IContext<Token>): INodePatternMatch<Node> | Falsy
+> {
+  (tokens: ReadonlyArray<Token>, context?: IContext<Token>): INodePatternMatch<Node> | Falsy
 }
 
 export function createValueOperatorExpressionPattern<
@@ -46,13 +46,15 @@ export function createValueOperatorExpressionPattern<
   transform: (value: string) => Value
 }): INodePatternWithContext<Token, IValueExpression<Node['type'], Node['value']>> {
   return tokens => {
-    const [firstToken] = tokens
-    if (firstToken?.type === tokenType) {
+    const mutableTokens = toArray(tokens)
+
+    const token = consumeToken(mutableTokens, tokenType)
+    if (isntFalsy(token)) {
       return {
         consumed: 1
       , node: {
           type: nodeType
-        , value: transform(firstToken.value)
+        , value: transform(token.value)
         }
       }
     }
@@ -68,13 +70,18 @@ export function createGroupedOperatorExpressionPattern<
   nodePattern: INodePatternWithContext<Token, Node>
 }): INodePatternWithContext<Token, Node> {
   return tokens => {
-    const [firstToken, ...restTokens] = tokens
-    if (firstToken?.type === leftTokenType) {
-      const result = nodePattern(restTokens, createEmptyContext())
-      if (isntFalsy(result) && tokens[result.consumed + 1]?.type === rightTokenType) {
-        return {
-          consumed: 1 + result.consumed + 1
-        , node: result.node
+    const mutableTokens = toArray(tokens)
+
+    const leftToken = consumeToken(mutableTokens, leftTokenType)
+    if (isntFalsy(leftToken)) {
+      const result = consumeNode<Token, Node>(mutableTokens, nodePattern)
+      if (isntFalsy(result)) {
+        const rightToken = consumeToken(mutableTokens, rightTokenType)
+        if (isntFalsy(rightToken)) {
+          return {
+            consumed: 1 + result.consumed + 1
+          , node: result.node
+          }
         }
       }
     }
@@ -91,9 +98,11 @@ export function createUnaryOperatorExpressionPattern<
   rightNodePattern: INodePatternWithContext<Token, Right>
 }): INodePatternWithContext<Token, IUnaryOperatorExpression<Node['type'], Node['right']>> {
   return tokens => {
-    const [firstToken, ...restTokens] = tokens
-    if (firstToken?.type === tokenType) {
-      const rightValue = rightNodePattern(restTokens, createEmptyContext())
+    const mutableTokens = toArray(tokens)
+
+    const leftToken = consumeToken(mutableTokens, tokenType)
+    if (isntFalsy(leftToken)) {
+      const rightValue = consumeNode<Token, Right>(mutableTokens, rightNodePattern)
       if (isntFalsy(rightValue)) {
         return {
           consumed: 1 + rightValue.consumed
@@ -122,20 +131,22 @@ export function createBinaryOperatorExpressionPattern<
 , IBinaryOperatorExpression<Node['type'], Node['left'], Node['right']>
 > {
   return function nodePattern(
-    tokens: Token[]
+    tokens: ReadonlyArray<Token>
   , context: IContext<Token> = createEmptyContext()
   ): INodePatternMatch<
     IBinaryOperatorExpression<Node['type'], Node['left'], Node['right']>
   > | Falsy {
     for (const indexOfToken of findAllIndexes(tokens, x => x.type === tokenType)) {
-      const leftTokens = tokens.slice(0, indexOfToken)
-      const leftValue = leftNodePattern(leftTokens, {
+      const mutableTokens = toArray(tokens)
+
+      const leftValue = consumeNode<Token, Left>(mutableTokens, leftNodePattern, {
         ...context
       , excludePatterns: [...context.excludePatterns, nodePattern]
       })
       if (isntFalsy(leftValue) && leftValue.consumed === indexOfToken) {
-        const rightTokens = tokens.slice(leftValue.consumed + 1)
-        const rightValue = rightNodePattern(rightTokens, createEmptyContext())
+        consumeToken(mutableTokens, tokenType)
+
+        const rightValue = consumeNode<Token, Right>(mutableTokens, rightNodePattern)
         if (isntFalsy(rightValue)) {
           return {
             consumed: leftValue.consumed + 1 + rightValue.consumed
@@ -174,4 +185,44 @@ export function createCompositePattern<
 
 export function createEmptyContext<Token extends IToken<string>>(): IContext<Token> {
   return { excludePatterns: [] }
+}
+
+/**
+ * 尝试匹配token, 如果成功, 则消耗掉相应的token.
+ * 
+ * @param tokens 匹配成功时会发生原地修改
+ */
+function consumeToken<T extends IToken<string>>(
+  tokens: Array<IToken<string>>
+, tokenType: string
+): T | Falsy {
+  const firstToken: IToken<string> | undefined = tokens[0]
+  
+  if (firstToken && firstToken.type === tokenType) {
+    tokens.shift()
+    return firstToken as T
+  }
+}
+
+/**
+ * 
+ * 尝试匹配node, 如果成功, 则消耗掉相应的token.
+ * 
+ * @param tokens 匹配成功时会发生原地修改
+ */
+function consumeNode<
+  Token extends IToken<string>
+, Node extends INode<string>
+, NodePattern extends INodePatternWithContext<Token, Node> = INodePatternWithContext<Token, Node> 
+>(
+  tokens: Token[]
+, nodePattern: NodePattern
+, context: IContext<Token> = createEmptyContext()
+): INodePatternMatch<Node> | Falsy {
+  const result = nodePattern(tokens, context)
+
+  if (isntFalsy(result)) {
+    tokens.splice(0, result.consumed)
+    return result
+  }
 }
