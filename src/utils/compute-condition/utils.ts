@@ -58,12 +58,12 @@ export function createGroupedOperatorExpressionPattern<
   rightTokenType: string
   nodePattern: INodePattern<Token, Node>
 }): INodePattern<Token, Node> {
-  return tokens => {
+  return async tokens => {
     const mutableTokens = toArray(tokens)
 
     const leftToken = consumeToken(mutableTokens, leftTokenType)
     if (isntFalsy(leftToken)) {
-      const match = consumeNode<Token, Node>(mutableTokens, nodePattern)
+      const match = await consumeNode<Token, Node>(mutableTokens, nodePattern)
       if (isntFalsy(match)) {
         const rightToken = consumeToken(mutableTokens, rightTokenType)
         if (isntFalsy(rightToken)) {
@@ -89,12 +89,12 @@ export function createUnaryOperatorExpressionPattern<
   Token
 , IUnaryOperatorExpression<Node['type'], Node['right']>
 > {
-  return tokens => {
+  return async tokens => {
     const mutableTokens = toArray(tokens)
 
     const leftToken = consumeToken(mutableTokens, tokenType)
     if (isntFalsy(leftToken)) {
-      const rightMatch = consumeNode<Token, Right>(mutableTokens, rightNodePattern)
+      const rightMatch = await consumeNode<Token, Right>(mutableTokens, rightNodePattern)
       if (isntFalsy(rightMatch)) {
         return {
           consumed: 1 + rightMatch.consumed
@@ -122,15 +122,15 @@ export function createBinaryOperatorExpressionPattern<
   Token
 , IBinaryOperatorExpression<Node['type'], Node['left'], Node['right']>
 > {
-  return tokens => {
+  return async tokens => {
     for (const indexOfToken of findAllIndexes(tokens, x => x.type === tokenType)) {
       const leftTokens = tokens.slice(0, indexOfToken)
 
-      const leftMatch = consumeNode<Token, Left>(leftTokens, leftNodePattern)
+      const leftMatch = await consumeNode<Token, Left>(leftTokens, leftNodePattern)
       if (isntFalsy(leftMatch) && leftMatch.consumed === indexOfToken) {
         const rightTokens = tokens.slice(indexOfToken + 1)
 
-        const rightMatch = consumeNode<Token, Right>(rightTokens, rightNodePattern)
+        const rightMatch = await consumeNode<Token, Right>(rightTokens, rightNodePattern)
         if (isntFalsy(rightMatch)) {
           return {
             consumed: leftMatch.consumed + 1 + rightMatch.consumed
@@ -152,9 +152,9 @@ export function createCompositePattern<
 >(
   nodePatterns: Array<INodePattern<Token, Node>>
 ): INodePattern<Token, Node> {
-  return tokens => {
+  return async tokens => {
     for (const pattern of nodePatterns) {
-      const match = pattern(tokens)
+      const match = await pattern(tokens)
       if (isntFalsy(match)) {
         return match
       }
@@ -184,15 +184,15 @@ function consumeToken<Token extends IToken<string>>(
  * 
  * @param tokens 匹配成功时会发生原地修改
  */
-function consumeNode<
+async function consumeNode<
   Token extends IToken<string>
 , Node extends INode<string>
 , NodePattern extends INodePattern<Token, Node> = INodePattern<Token, Node>
 >(
   tokens: Token[]
 , nodePattern: NodePattern
-): INodePatternMatch<Node> | Falsy {
-  const match = nodePattern(tokens)
+): Promise<INodePatternMatch<Node> | Falsy> {
+  const match = await nodePattern(tokens)
 
   if (isntFalsy(match)) {
     tokens.splice(0, match.consumed)

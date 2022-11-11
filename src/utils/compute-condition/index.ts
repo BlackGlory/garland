@@ -1,6 +1,6 @@
 import { assert } from '@blackglory/prelude'
 import { tokenize, parse, IToken } from 'extra-parser'
-import { toArray, filter } from 'iterable-operator'
+import { toArrayAsync, filterAsync } from 'iterable-operator'
 import { pipe } from 'extra-utils'
 import { tokenPatterns } from './token-patterns'
 import { nodePatterns } from './node-patterns'
@@ -18,15 +18,15 @@ interface IContext {
   tags: string[]
 }
 
-export function computeCondition(condition: string, tags: string[]): boolean {
-  const tokens = pipe(
+export async function computeCondition(condition: string, tags: string[]): Promise<boolean> {
+  const tokens = await pipe(
     tokenize<Token>(condition, tokenPatterns)
-  , iter => filter(iter, isntWhiteSpace)
-  , iter => toArray(iter)
+  , iter => filterAsync(iter, isntWhiteSpace)
+  , iter => toArrayAsync(iter)
   )
   if (tokens.length === 0) return false
 
-  const nodes = toArray(parse<Token, Node>(tokens, nodePatterns))
+  const nodes = await toArrayAsync(parse<Token, Node>(tokens, nodePatterns))
   assert(nodes.length === 1, 'The condition contains an invliad expression')
 
   const [node] = nodes

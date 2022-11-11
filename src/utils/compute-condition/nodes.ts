@@ -1,4 +1,3 @@
-import { INode } from 'extra-parser'
 import { IUnaryOperatorExpression, IBinaryOperatorExpression, IValueExpression } from './utils'
 
 export type Node =
