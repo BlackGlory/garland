@@ -35,7 +35,7 @@ export async function computeCondition(condition: string, tags: string[]): Promi
 }
 
 function isWhiteSpace(token: IToken<string>): boolean {
-  return token.type === 'WhiteSpace'
+  return token.tokenType === 'WhiteSpace'
 }
 
 function isntWhiteSpace(token: IToken<string>): boolean {
@@ -43,7 +43,7 @@ function isntWhiteSpace(token: IToken<string>): boolean {
 }
 
 function computeNode(context: IContext, node: Node): boolean {
-  switch (node.type) {
+  switch (node.nodeType) {
     case 'AndExpression': return computeAndExpression(context, node)
     case 'OrExpression': return computeOrExpression(context, node)
     case 'XorExpression': return computeXorExpression(context, node)

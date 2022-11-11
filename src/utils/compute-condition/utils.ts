@@ -31,9 +31,9 @@ export function createValueOperatorExpressionPattern<
 , Value
 >({ tokenType, nodeType, transform }: {
   tokenType: string
-  nodeType: Node['type']
+  nodeType: Node['nodeType']
   transform: (value: string) => Value
-}): INodePattern<Token, IValueExpression<Node['type'], Node['value']>> {
+}): INodePattern<Token, IValueExpression<Node['nodeType'], Node['value']>> {
   return tokens => {
     const mutableTokens = toArray(tokens)
 
@@ -42,7 +42,7 @@ export function createValueOperatorExpressionPattern<
       return {
         consumed: 1
       , node: {
-          type: nodeType
+          nodeType
         , value: transform(token.value)
         }
       }
@@ -83,11 +83,11 @@ export function createUnaryOperatorExpressionPattern<
 , Right extends INode<string>
 >({ tokenType, nodeType, rightNodePattern }: {
   tokenType: string
-  nodeType: Node['type']
+  nodeType: Node['nodeType']
   rightNodePattern: INodePattern<Token, Right>
 }): INodePattern<
   Token
-, IUnaryOperatorExpression<Node['type'], Node['right']>
+, IUnaryOperatorExpression<Node['nodeType'], Node['right']>
 > {
   return async tokens => {
     const mutableTokens = toArray(tokens)
@@ -99,7 +99,7 @@ export function createUnaryOperatorExpressionPattern<
         return {
           consumed: 1 + rightMatch.consumed
         , node: {
-            type: nodeType
+            nodeType
           , right: rightMatch.node
           }
         }
@@ -115,15 +115,15 @@ export function createBinaryOperatorExpressionPattern<
 , Right extends INode<string>
 >({ tokenType, nodeType, rightNodePattern, leftNodePattern }: {
   tokenType: string
-  nodeType: Node['type']
+  nodeType: Node['nodeType']
   leftNodePattern: INodePattern<Token, Left>
   rightNodePattern: INodePattern<Token, Right>
 }): INodePattern<
   Token
-, IBinaryOperatorExpression<Node['type'], Node['left'], Node['right']>
+, IBinaryOperatorExpression<Node['nodeType'], Node['left'], Node['right']>
 > {
   return async tokens => {
-    for (const indexOfToken of findAllIndexes(tokens, x => x.type === tokenType)) {
+    for (const indexOfToken of findAllIndexes(tokens, x => x.tokenType === tokenType)) {
       const leftTokens = tokens.slice(0, indexOfToken)
 
       const leftMatch = await consumeNode<Token, Left>(leftTokens, leftNodePattern)
@@ -135,7 +135,7 @@ export function createBinaryOperatorExpressionPattern<
           return {
             consumed: leftMatch.consumed + 1 + rightMatch.consumed
           , node: {
-              type: nodeType
+              nodeType
             , left: leftMatch.node
             , right: rightMatch.node
             }
@@ -173,7 +173,7 @@ function consumeToken<Token extends IToken<string>>(
 ): Token | Falsy {
   const firstToken: IToken<string> | undefined = tokens[0]
   
-  if (firstToken && firstToken.type === tokenType) {
+  if (firstToken && firstToken.tokenType === tokenType) {
     tokens.shift()
     return firstToken as Token
   }
