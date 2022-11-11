@@ -18,7 +18,10 @@ interface IContext {
   tags: string[]
 }
 
-export async function computeCondition(condition: string, tags: string[]): Promise<boolean> {
+export async function computeCondition(
+  condition: string
+, tags: string[]
+): Promise<boolean> {
   const tokens = await pipe(
     tokenize<Token>(condition, tokenPatterns)
   , iter => filterAsync(iter, isntWhiteSpace)

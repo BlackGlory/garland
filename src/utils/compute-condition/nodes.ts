@@ -1,4 +1,8 @@
-import { IUnaryOperatorExpression, IBinaryOperatorExpression, IValueExpression } from './utils'
+import {
+  IUnaryOperatorExpression
+, IBinaryOperatorExpression
+, IValueExpression
+} from './utils'
 
 export type Node =
 | IdentifierExpression

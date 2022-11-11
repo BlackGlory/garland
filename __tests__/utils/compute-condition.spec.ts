@@ -7,6 +7,14 @@ describe('computeCondition', () => {
     expect(await computeCondition(condition, [])).toBe(false)
   })
 
+  test('tag', async () => {
+    const condition = 'a'
+
+    expect(await computeCondition(condition, [])).toBe(false)
+    expect(await computeCondition(condition, ['a'])).toBe(true)
+    expect(await computeCondition(condition, ['a', 'b'])).toBe(true)
+  })
+
   test('and', async () => {
     const condition = 'a and b'
 
