@@ -70,7 +70,7 @@ export function createGroupedOperatorExpressionPattern<
       tokens
     , [
         leftTokenType
-      , nodePattern as unknown as INodePattern<IToken<string>, INode<string>>
+      , nodePattern as INodePattern<IToken<string>, Node>
       , rightTokenType
       ]
     )
@@ -99,7 +99,7 @@ export function createUnaryOperatorExpressionPattern<
   return async tokens => {
     const matches = await matchSequence<[IToken<string>, INode<string>]>(tokens, [
       tokenType
-    , rightNodePattern as unknown as INodePattern<IToken<string>, INode<string>>
+    , rightNodePattern as INodePattern<IToken<string>, Right>
     ])
     if (isntFalsy(matches)) {
       const [leftToken, rightMatch] = matches
@@ -132,9 +132,9 @@ export function createBinaryOperatorExpressionPattern<
     const matches = await matchSequence<[INode<string>, IToken<string>, INode<string>]>(
       tokens
     , [
-        leftNodePattern as unknown as INodePattern<IToken<string>, INode<string>>
+        leftNodePattern as INodePattern<IToken<string>, Left>
       , tokenType
-      , rightNodePattern as unknown as INodePattern<IToken<string>, INode<string>>
+      , rightNodePattern as INodePattern<IToken<string>, Right>
       ]
     )
     if (isntFalsy(matches)) {
@@ -155,7 +155,7 @@ export function createCompositePattern<
   Token extends IToken<string>
 , Node extends INode<string>
 >(
-  nodePatterns: Array<INodePattern<Token, Node>>
+  nodePatterns: ReadonlyArray<INodePattern<Token, Node>>
 ): INodePattern<Token, Node> {
   return async tokens => {
     for (const pattern of nodePatterns) {
@@ -176,7 +176,7 @@ type MapSequenceToPatterns<
       Element extends IToken<string>
       ? string
     : Element extends INode<string>
-      ? INodePattern<IToken<string>, INode<string>>
+      ? INodePattern<IToken<string>, Element>
     : never
     )
   : never
@@ -370,7 +370,7 @@ function isNode<T extends string>(val: unknown): val is INode<T> {
  * @param tokens 匹配成功时会发生原地修改
  */
 function consumeToken<Token extends IToken<string>>(
-  tokens: Array<IToken<string>>
+  tokens: Array<Token>
 , tokenType: string
 ): Token | Falsy {
   const firstToken: IToken<string> | undefined = tokens[0]
@@ -389,10 +389,9 @@ function consumeToken<Token extends IToken<string>>(
 async function consumeNode<
   Token extends IToken<string>
 , Node extends INode<string>
-, NodePattern extends INodePattern<Token, Node> = INodePattern<Token, Node>
 >(
   tokens: Token[]
-, nodePattern: NodePattern
+, nodePattern: INodePattern<Token, Node>
 ): Promise<INodePatternMatch<Node> | Falsy> {
   const match = await nodePattern(tokens)
 
