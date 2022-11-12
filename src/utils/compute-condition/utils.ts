@@ -9,31 +9,31 @@ import {
 } from '@blackglory/prelude'
 import { toArray, findAllIndexes } from 'iterable-operator'
 
-export interface IValueExpression<
-  NodeType extends string
-, Value
-> extends INode<NodeType> {
+export interface IValueExpression<NodeType extends string, Value> extends INode {
+  nodeType: NodeType
   value: Value
 }
 
 export interface IUnaryOperatorExpression<
   NodeType extends string
-, Right extends INode<string>
-> extends INode<NodeType> {
+, Right extends INode
+> extends INode {
+  nodeType: NodeType
   right: Right
 }
 
 export interface IBinaryOperatorExpression<
   NodeType extends string
-, Left extends INode<string>
-, Right extends INode<string>
-> extends INode<NodeType> {
+, Left extends INode
+, Right extends INode
+> extends INode {
+  nodeType: NodeType
   left: Left
   right: Right
 }
 
 export function createValueOperatorExpressionPattern<
-  Token extends IToken<string>
+  Token extends IToken
 , Node extends IValueExpression<string, Value>
 , Value
 >({ tokenType, nodeType, transform }: {
@@ -58,19 +58,19 @@ export function createValueOperatorExpressionPattern<
 }
 
 export function createGroupedOperatorExpressionPattern<
-  Token extends IToken<string>
-, Node extends INode<string>
+  Token extends IToken
+, Node extends INode
 >({ leftTokenType, rightTokenType, nodePattern }: {
   leftTokenType: string
   rightTokenType: string
   nodePattern: INodePattern<Token, Node>
 }): INodePattern<Token, Node> {
   return async tokens => {
-    const matches = await matchSequence<[IToken<string>, INode<string>, IToken<string>]>(
+    const matches = await matchSequence<[IToken, INode, IToken]>(
       tokens
     , [
         leftTokenType
-      , nodePattern as INodePattern<IToken<string>, Node>
+      , nodePattern as INodePattern<IToken, Node>
       , rightTokenType
       ]
     )
@@ -85,9 +85,9 @@ export function createGroupedOperatorExpressionPattern<
 }
 
 export function createUnaryOperatorExpressionPattern<
-  Token extends IToken<string>
+  Token extends IToken
 , Node extends IUnaryOperatorExpression<string, Right>
-, Right extends INode<string>
+, Right extends INode
 >({ tokenType, nodeType, rightNodePattern }: {
   tokenType: string
   nodeType: Node['nodeType']
@@ -97,9 +97,9 @@ export function createUnaryOperatorExpressionPattern<
 , IUnaryOperatorExpression<Node['nodeType'], Node['right']>
 > {
   return async tokens => {
-    const matches = await matchSequence<[IToken<string>, INode<string>]>(tokens, [
+    const matches = await matchSequence<[IToken, INode]>(tokens, [
       tokenType
-    , rightNodePattern as INodePattern<IToken<string>, Right>
+    , rightNodePattern as INodePattern<IToken, Right>
     ])
     if (isntFalsy(matches)) {
       const [leftToken, rightMatch] = matches
@@ -115,10 +115,10 @@ export function createUnaryOperatorExpressionPattern<
 }
 
 export function createBinaryOperatorExpressionPattern<
-  Token extends IToken<string>
+  Token extends IToken
 , Node extends IBinaryOperatorExpression<string, Left, Right>
-, Left extends INode<string>
-, Right extends INode<string>
+, Left extends INode
+, Right extends INode
 >({ tokenType, nodeType, rightNodePattern, leftNodePattern }: {
   tokenType: string
   nodeType: Node['nodeType']
@@ -129,12 +129,12 @@ export function createBinaryOperatorExpressionPattern<
 , IBinaryOperatorExpression<Node['nodeType'], Node['left'], Node['right']>
 > {
   return async tokens => {
-    const matches = await matchSequence<[INode<string>, IToken<string>, INode<string>]>(
+    const matches = await matchSequence<[INode, IToken, INode]>(
       tokens
     , [
-        leftNodePattern as INodePattern<IToken<string>, Left>
+        leftNodePattern as INodePattern<IToken, Left>
       , tokenType
-      , rightNodePattern as INodePattern<IToken<string>, Right>
+      , rightNodePattern as INodePattern<IToken, Right>
       ]
     )
     if (isntFalsy(matches)) {
@@ -152,8 +152,8 @@ export function createBinaryOperatorExpressionPattern<
 }
 
 export function createCompositePattern<
-  Token extends IToken<string>
-, Node extends INode<string>
+  Token extends IToken = IToken
+, Node extends INode = INode
 >(
   nodePatterns: ReadonlyArray<INodePattern<Token, Node>>
 ): INodePattern<Token, Node> {
@@ -168,29 +168,29 @@ export function createCompositePattern<
 }
 
 type MapSequenceToPatterns<
-  Sequence extends ReadonlyArray<IToken<string> | INode<string>>
+  Sequence extends ReadonlyArray<IToken | INode>
 > = {
   [Index in keyof Sequence]:
     [Sequence[Index]] extends [infer Element]
   ? (
-      Element extends IToken<string>
+      Element extends IToken
       ? string
-    : Element extends INode<string>
-      ? INodePattern<IToken<string>, Element>
+    : Element extends INode
+      ? INodePattern<IToken, Element>
     : never
     )
   : never
 }
 
 type MapSequenceToMatches<
-  Sequence extends ReadonlyArray<IToken<string> | INode<string>>
+  Sequence extends ReadonlyArray<IToken | INode>
 > = {
   [Index in keyof Sequence]:
     [Sequence[Index]] extends [infer Element]
   ? (
-      Element extends IToken<string>
-      ? IToken<string>
-    : Element extends INode<string>
+      Element extends IToken
+      ? IToken
+    : Element extends INode
       ? INodePatternMatch<Element>
     : never
     )
@@ -207,13 +207,13 @@ type MapSequenceToMatches<
  *    在引擎盖下, 它首先匹配TokenType以防止NodePattern在匹配时陷入死循环.
  */
 async function matchSequence<
-  Sequence extends ReadonlyArray<IToken<string> | INode<string>>
+  Sequence extends ReadonlyArray<IToken | INode>
 >(
-  tokens: ReadonlyArray<IToken<string>>
+  tokens: ReadonlyArray<IToken>
 , patterns: MapSequenceToPatterns<Sequence>
 ): Promise<MapSequenceToMatches<Sequence> | Falsy> {
   if (isTokenTypes(patterns)) {
-    const matches: Array<IToken<string>> = []
+    const matches: Array<IToken> = []
 
     const mutableTokens = toArray(tokens)
     for (const pattern of patterns) {
@@ -227,7 +227,7 @@ async function matchSequence<
 
     return matches as MapSequenceToMatches<Sequence>
   } else if (isNodePatterns(patterns)) {
-    const matches: Array<INodePatternMatch<INode<string>>> = []
+    const matches: Array<INodePatternMatch<INode>> = []
 
     const mutableTokens = toArray(tokens)
     for (const pattern of patterns) {
@@ -250,7 +250,7 @@ async function matchSequence<
         isntFalsy(leftMatch) &&
         leftMatch.consumed === indexOfToken
       ) {
-        const matches: [INodePatternMatch<INode<string>>, IToken<string>] = [
+        const matches: [INodePatternMatch<INode>, IToken] = [
           leftMatch
         , tokens[indexOfToken]
         ]
@@ -258,10 +258,10 @@ async function matchSequence<
       }
     }
   } else {
-    const matches: Array<INodePatternMatch<INode<string>> | IToken<string>> = []
+    const matches: Array<INodePatternMatch<INode> | IToken> = []
     const remainingTokens = toArray(tokens)
     for (const subPatterns of splitPatterns(patterns)) {
-      const subMatches = await matchSequence<Array<IToken<string> | INode<string>>>(
+      const subMatches = await matchSequence<Array<IToken | INode>>(
         remainingTokens
       , subPatterns
       )
@@ -283,12 +283,9 @@ async function matchSequence<
   }
 
   type SubPatterns =
-  | [
-      INodePattern<IToken<string>, INode<string>>
-    , string
-    ]
+  | [INodePattern<IToken, INode>, string]
   | NonEmptyArray<string>
-  | NonEmptyArray<INodePattern<IToken<string>, INode<string>>>
+  | NonEmptyArray<INodePattern<IToken, INode>>
 
   /**
    * 该函数会匹配尽可能长的subPatterns.
@@ -310,11 +307,11 @@ async function matchSequence<
         const indexOfToken = mutablePatterns.findIndex(x => isTokenType(x))
         if (indexOfToken === -1) {
           yield mutablePatterns.splice(0) as NonEmptyArray<
-            INodePattern<IToken<string>, INode<string>>
+            INodePattern<IToken, INode>
           >
         } else {
           yield mutablePatterns.splice(0, indexOfToken + 1) as [
-            INodePattern<IToken<string>, INode<string>>
+            INodePattern<IToken, INode>
           , string
           ]
         }
@@ -334,32 +331,32 @@ async function matchSequence<
 
   function isNodePatterns(
     arr: ReadonlyArray<unknown>
-  ): arr is ReadonlyArray<INodePattern<IToken<string>, INode<string>>> {
+  ): arr is ReadonlyArray<INodePattern<IToken, INode>> {
     return arr.every(isNodePattern)
   }
 
   function isNodePattern(
     val: unknown
-  ): val is INodePattern<IToken<string>, INode<string>> {
+  ): val is INodePattern<IToken, INode> {
     return isFunction(val)
   }
 
   function isNodePatternNodeType(
     arr: ReadonlyArray<unknown>
-  ): arr is readonly [INodePattern<IToken<string>, INode<string>>, string] {
+  ): arr is readonly [INodePattern<IToken, INode>, string] {
     return arr.length === 2
         && isNodePattern(arr[0])
         && isTokenType(arr[1])
   }
 }
 
-function isToken<T extends string>(val: unknown): val is IToken<T> {
+function isToken(val: unknown): val is IToken {
   return isObject(val)
       && 'tokenType' in val && isString
       && 'value' in val && isString(val.value)
 }
 
-function isNode<T extends string>(val: unknown): val is INode<T> {
+function isNode(val: unknown): val is INode {
   return isObject(val)
       && 'nodeType' in val && isString(val.nodeType)
 }
@@ -369,11 +366,11 @@ function isNode<T extends string>(val: unknown): val is INode<T> {
  * 
  * @param tokens 匹配成功时会发生原地修改
  */
-function consumeToken<Token extends IToken<string>>(
+function consumeToken<Token extends IToken = IToken>(
   tokens: Array<Token>
 , tokenType: string
 ): Token | Falsy {
-  const firstToken: IToken<string> | undefined = tokens[0]
+  const firstToken: IToken | undefined = tokens[0]
   
   if (firstToken && firstToken.tokenType === tokenType) {
     tokens.shift()
@@ -386,10 +383,7 @@ function consumeToken<Token extends IToken<string>>(
  * 
  * @param tokens 匹配成功时会发生原地修改
  */
-async function consumeNode<
-  Token extends IToken<string>
-, Node extends INode<string>
->(
+async function consumeNode<Token extends IToken = IToken, Node extends INode = INode>(
   tokens: Token[]
 , nodePattern: INodePattern<Token, Node>
 ): Promise<INodePatternMatch<Node> | Falsy> {

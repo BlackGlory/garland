@@ -1,5 +1,5 @@
-import { Token } from './tokens'
 import { INodePattern } from 'extra-parser'
+import { Token } from './tokens'
 import {
   Node
 , IdentifierExpression

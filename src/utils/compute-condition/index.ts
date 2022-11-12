@@ -4,7 +4,7 @@ import { toArrayAsync, filterAsync } from 'iterable-operator'
 import { pipe } from 'extra-utils'
 import { tokenPatterns } from './token-patterns'
 import { nodePatterns } from './node-patterns'
-import { Token } from './tokens'
+import { WhiteSpaceToken } from './tokens'
 import {
   Node
 , AndExpression
@@ -23,13 +23,13 @@ export async function computeCondition(
 , tags: string[]
 ): Promise<boolean> {
   const tokens = await pipe(
-    tokenize<Token>(condition, tokenPatterns)
+    tokenize(condition, tokenPatterns)
   , iter => filterAsync(iter, isntWhiteSpace)
   , iter => toArrayAsync(iter)
   )
   if (tokens.length === 0) return false
 
-  const nodes = await toArrayAsync(parse<Token, Node>(tokens, nodePatterns))
+  const nodes = await toArrayAsync(parse(tokens, nodePatterns))
   assert(nodes.length === 1, 'The condition contains an invliad expression')
 
   const [node] = nodes
@@ -37,11 +37,11 @@ export async function computeCondition(
   return computeNode(context, node)
 }
 
-function isWhiteSpace(token: IToken<string>): boolean {
+function isWhiteSpace(token: IToken): token is WhiteSpaceToken {
   return token.tokenType === 'WhiteSpace'
 }
 
-function isntWhiteSpace(token: IToken<string>): boolean {
+function isntWhiteSpace<T extends IToken>(token: T): token is Exclude<T, WhiteSpaceToken> {
   return !isWhiteSpace(token)
 }
 

@@ -1,20 +1,43 @@
 import { IToken } from 'extra-parser'
 
 export type Token =
-| Identifier
-| And
-| Or
-| Not
-| Xor
-| WhiteSpace
-| LeftParenthesis
-| RightParenthesis
+| IdentifierToken
+| AndToken
+| OrToken
+| NotToken
+| XorToken
+| WhiteSpaceToken
+| LeftParenthesisToken
+| RightParenthesisToken
 
-export type Identifier = IToken<'Identifier'>
-export type And = IToken<'And'>
-export type Or = IToken<'Or'>
-export type Not = IToken<'Not'>
-export type Xor = IToken<'Xor'>
-export type WhiteSpace = IToken<'WhiteSpace'>
-export type LeftParenthesis = IToken<'LeftParenthesis'>
-export type RightParenthesis = IToken<'RightParenthesis'>
+export interface IdentifierToken extends IToken {
+  tokenType: 'Identifier'
+}
+
+export interface AndToken extends IToken {
+  tokenType: 'And'
+}
+
+export interface OrToken extends IToken {
+  tokenType: 'Or'
+}
+
+export interface NotToken extends IToken {
+  tokenType: 'Not'
+}
+
+export interface XorToken extends IToken {
+  tokenType: 'Xor'
+}
+
+export interface WhiteSpaceToken extends IToken {
+  tokenType: 'WhiteSpace'
+}
+
+export interface LeftParenthesisToken extends IToken {
+  tokenType: 'LeftParenthesis'
+}
+
+export interface RightParenthesisToken extends IToken {
+  tokenType: 'RightParenthesis'
+}
