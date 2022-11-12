@@ -1,92 +1,92 @@
-import { INodePattern } from 'extra-parser'
+import {
+  INodePattern
+, createBinaryOperatorExpressionNodePattern
+, createUnaryOperatorExpressionNodePattern
+, createGroupedExpressionNodePattern
+, createValueExpressionNodePattern
+, matchAnyOf
+} from 'extra-parser'
 import { Token } from './tokens'
 import {
   Node
-, IdentifierExpression
-, OrExpression
-, XorExpression
-, AndExpression
-, NotExpression
+, IdentifierExpressionNode
+, OrExpressionNode
+, XorExpressionNode
+, AndExpressionNode
+, NotExpressionNode
 } from './nodes'
-import {
-  createValueOperatorExpressionPattern
-, createGroupedOperatorExpressionPattern
-, createUnaryOperatorExpressionPattern
-, createBinaryOperatorExpressionPattern
-, createCompositePattern
-} from './utils'
 
 // 模式解析的顺序将决定运算符的优先级, 这与运算符的优先级顺序相反:
 // 运算符的优先级越低, 它在AST里的位置距离根节点就越近.
 // 节点离根节点越近, 意味着其解析的时间点越早, 因此模式解析的优先级就越高.
 export const nodePatterns: Array<INodePattern<Token, Node>> = []
 
-const anyNodePattern = createCompositePattern(nodePatterns)
+const anyNodePattern: INodePattern<Token, Node> = tokens => matchAnyOf(nodePatterns, tokens)
 
-const orExpressionPattern = createBinaryOperatorExpressionPattern<
+const orExpressionPattern = createBinaryOperatorExpressionNodePattern<
   Token
-, OrExpression
+, OrExpressionNode
 , Node
 , Node
 >({
-  tokenType: 'Or'
-, nodeType: 'OrExpression'
+  nodeType: 'OrExpression'
 , leftNodePattern: anyNodePattern
+, centerTokenType: 'Or'
 , rightNodePattern: anyNodePattern
 })
 nodePatterns.push(orExpressionPattern)
 
-const xorExpressionPattern = createBinaryOperatorExpressionPattern<
+const xorExpressionPattern = createBinaryOperatorExpressionNodePattern<
   Token
-, XorExpression
+, XorExpressionNode
 , Node
 , Node
 >({
-  tokenType: 'Xor'
-, nodeType: 'XorExpression'
+  nodeType: 'XorExpression'
 , leftNodePattern: anyNodePattern
+, centerTokenType: 'Xor'
 , rightNodePattern: anyNodePattern
 })
 nodePatterns.push(xorExpressionPattern)
 
-const andExpressionPattern = createBinaryOperatorExpressionPattern<
+const andExpressionPattern = createBinaryOperatorExpressionNodePattern<
   Token
-, AndExpression
+, AndExpressionNode
 , Node
 , Node
 >({
-  tokenType: 'And'
-, nodeType: 'AndExpression'
+  nodeType: 'AndExpression'
 , leftNodePattern: anyNodePattern
+, centerTokenType: 'And'
 , rightNodePattern: anyNodePattern
 })
 nodePatterns.push(andExpressionPattern)
 
-const notExpressionPattern = createUnaryOperatorExpressionPattern<
+const notExpressionPattern = createUnaryOperatorExpressionNodePattern<
   Token
-, NotExpression
+, NotExpressionNode
 , Node
 >({
-  tokenType: 'Not'
-, nodeType: 'NotExpression'
+  nodeType: 'NotExpression'
+, leftTokenType: 'Not'
 , rightNodePattern: anyNodePattern
 })
 nodePatterns.push(notExpressionPattern)
 
-const parenthesisExpressionPattern = createGroupedOperatorExpressionPattern<Token, Node>({
+const parenthesisExpressionPattern = createGroupedExpressionNodePattern<Token, Node>({
   leftTokenType: 'LeftParenthesis'
+, centerNodePattern: anyNodePattern
 , rightTokenType: 'RightParenthesis'
-, nodePattern: anyNodePattern
 })
 nodePatterns.push(parenthesisExpressionPattern)
 
-const identifierExpressionPattern = createValueOperatorExpressionPattern<
+const identifierExpressionPattern = createValueExpressionNodePattern<
   Token
-, IdentifierExpression
+, IdentifierExpressionNode
 , string
 >({
-  tokenType: 'Identifier'
-, nodeType: 'IdentifierExpression'
-, transform: x => x
+  nodeType: 'IdentifierExpression'
+, valueTokenType: 'Identifier'
+, transformValue: x => x
 })
 nodePatterns.push(identifierExpressionPattern)

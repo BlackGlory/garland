@@ -7,11 +7,11 @@ import { nodePatterns } from './node-patterns'
 import { WhiteSpaceToken } from './tokens'
 import {
   Node
-, AndExpression
-, IdentifierExpression
-, NotExpression
-, OrExpression
-, XorExpression
+, AndExpressionNode
+, IdentifierExpressionNode
+, NotExpressionNode
+, OrExpressionNode
+, XorExpressionNode
 } from './nodes'
 
 interface IContext {
@@ -23,13 +23,13 @@ export async function computeCondition(
 , tags: string[]
 ): Promise<boolean> {
   const tokens = await pipe(
-    tokenize(condition, tokenPatterns)
+    tokenize(tokenPatterns, condition)
   , iter => filterAsync(iter, isntWhiteSpace)
   , iter => toArrayAsync(iter)
   )
   if (tokens.length === 0) return false
 
-  const nodes = await toArrayAsync(parse(tokens, nodePatterns))
+  const nodes = await toArrayAsync(parse(nodePatterns, tokens))
   assert(nodes.length === 1, 'The condition contains an invliad expression')
 
   const [node] = nodes
@@ -55,27 +55,27 @@ function computeNode(context: IContext, node: Node): boolean {
   }
 }
 
-function computeAndExpression(context: IContext, node: AndExpression): boolean {
+function computeAndExpression(context: IContext, node: AndExpressionNode): boolean {
   return computeNode(context, node.left)
       && computeNode(context, node.right)
 }
 
-function computeOrExpression(context: IContext, node: OrExpression): boolean {
+function computeOrExpression(context: IContext, node: OrExpressionNode): boolean {
   return computeNode(context, node.left)
       || computeNode(context, node.right)
 }
 
-function computeXorExpression(context: IContext, node: XorExpression): boolean {
+function computeXorExpression(context: IContext, node: XorExpressionNode): boolean {
   const leftValue = computeNode(context, node.left)
   const rightValue = computeNode(context, node.right)
   return (leftValue && !rightValue)
       || (!leftValue && rightValue)
 }
 
-function computeNotExpression(context: IContext, node: NotExpression): boolean {
+function computeNotExpression(context: IContext, node: NotExpressionNode): boolean {
   return !computeNode(context, node.right)
 }
 
-function computeIdentifier(context: IContext, node: IdentifierExpression): boolean {
+function computeIdentifier(context: IContext, node: IdentifierExpressionNode): boolean {
   return context.tags.includes(node.value)
 }

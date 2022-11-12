@@ -1,18 +1,18 @@
 import {
-  IUnaryOperatorExpression
-, IBinaryOperatorExpression
-, IValueExpression
-} from './utils'
+  IValueExpressionNode
+, IBinaryOperatorExpressionNode
+, IUnaryOperatorExpressionNode
+} from 'extra-parser'
 
 export type Node =
-| IdentifierExpression
-| OrExpression
-| XorExpression
-| AndExpression
-| NotExpression
+| IdentifierExpressionNode
+| OrExpressionNode
+| XorExpressionNode
+| AndExpressionNode
+| NotExpressionNode
 
-export type IdentifierExpression = IValueExpression<'IdentifierExpression', string>
-export type OrExpression = IBinaryOperatorExpression<'OrExpression', Node, Node>
-export type XorExpression = IBinaryOperatorExpression<'XorExpression', Node, Node>
-export type AndExpression = IBinaryOperatorExpression<'AndExpression', Node, Node>
-export type NotExpression = IUnaryOperatorExpression<'NotExpression', Node>
+export type IdentifierExpressionNode = IValueExpressionNode<'IdentifierExpression', string>
+export type OrExpressionNode = IBinaryOperatorExpressionNode<'OrExpression', Node, Node>
+export type XorExpressionNode = IBinaryOperatorExpressionNode<'XorExpression', Node, Node>
+export type AndExpressionNode = IBinaryOperatorExpressionNode<'AndExpression', Node, Node>
+export type NotExpressionNode = IUnaryOperatorExpressionNode<'NotExpression', Node>
