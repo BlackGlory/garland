@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/BlackGlory/garland/compare/v0.1.8...v0.1.9) (2023-01-25)
+
+
+### Bug Fixes
+
+* typo ([fb714fe](https://github.com/BlackGlory/garland/commit/fb714feb384685955ac2de8ab0d6b5a76bb307b3))
+
 ### [0.1.8](https://github.com/BlackGlory/garland/compare/v0.1.7...v0.1.8) (2022-11-12)
 
 ### [0.1.7](https://github.com/BlackGlory/garland/compare/v0.1.6...v0.1.7) (2022-11-09)
