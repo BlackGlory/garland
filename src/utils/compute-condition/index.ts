@@ -30,7 +30,7 @@ export async function computeCondition(
   if (tokens.length === 0) return false
 
   const nodes = await toArrayAsync(parse(nodePatterns, tokens))
-  assert(nodes.length === 1, 'The condition contains an invliad expression')
+  assert(nodes.length === 1, 'The condition contains an invalid expression')
 
   const [node] = nodes
   const context: IContext = { tags }
