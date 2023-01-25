@@ -21,7 +21,10 @@ import {
 // 节点离根节点越近, 意味着其解析的时间点越早, 因此模式解析的优先级就越高.
 export const nodePatterns: Array<INodePattern<Token, Node>> = []
 
-const anyNodePattern: INodePattern<Token, Node> = tokens => matchAnyOf(nodePatterns, tokens)
+const anyNodePattern: INodePattern<Token, Node> = tokens => matchAnyOf(
+  nodePatterns
+, tokens
+)
 
 const orExpressionPattern = createBinaryOperatorExpressionNodePattern<
   Token
