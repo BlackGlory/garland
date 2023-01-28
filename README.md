@@ -3,7 +3,7 @@ A folder hierarchy builder based on tags and symbolic links.
 
 ## Install
 ```sh
-npm install -g garland
+npm install --global garland
 # or
 yarn add garland
 ```
