@@ -22,8 +22,9 @@ program
   .description('list all tags')
   .action(() => {
     const globalOptions = program.opts<IGlobalOptions>()
+    const tagDefinitionsFilename = getTagDefinitionsFilename(globalOptions)
 
-    tags({ tagDefinitionsFilename: globalOptions.tagDefinitions })
+    tags({ tagDefinitionsFilename })
   })
 
 program
@@ -32,10 +33,11 @@ program
   .argument('<blueprint>', 'blueprint file')
   .action((blueprintFilename: string) => {
     const globalOptions = program.opts<IGlobalOptions>()
+    const tagDefinitionsFilename = getTagDefinitionsFilename(globalOptions)
 
     build({
-      blueprintFilename
-    , tagDefinitionsFilename: globalOptions.tagDefinitions
+      tagDefinitionsFilename
+    , blueprintFilename
     })
   })
 
@@ -45,11 +47,16 @@ program
   .argument('<expression>', 'condition expression')
   .action((conditionExpression: string) => {
     const globalOptions = program.opts<IGlobalOptions>()
+    const tagDefinitionsFilename = getTagDefinitionsFilename(globalOptions)
 
     test({
-      tagDefinitionsFilename: globalOptions.tagDefinitions
+      tagDefinitionsFilename
     , conditionExpression
     })
   })
 
 program.parse()
+
+function getTagDefinitionsFilename(options: IGlobalOptions): string {
+  return options.tagDefinitions
+}
