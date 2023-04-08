@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/BlackGlory/garland/compare/v0.1.9...v0.2.0) (2023-04-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* The minimal version of Node.js is 16.
+
+### Bug Fixes
+
+* edge cases for condition parser ([2f53ae5](https://github.com/BlackGlory/garland/commit/2f53ae56c613872156d7d8807bfe019e337cf077))
+
+
+* upgrade dependencies ([028489e](https://github.com/BlackGlory/garland/commit/028489e089ed50fcc3d2602887912c10e050179c))
+
 ### [0.1.9](https://github.com/BlackGlory/garland/compare/v0.1.8...v0.1.9) (2023-01-25)
 
 
