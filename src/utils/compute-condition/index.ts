@@ -1,10 +1,3 @@
-import { assert } from '@blackglory/prelude'
-import { tokenize, parse, IToken } from 'extra-parser'
-import { toArrayAsync, filterAsync } from 'iterable-operator'
-import { pipe } from 'extra-utils'
-import { tokenPatterns } from './token-patterns.js'
-import { nodePatterns } from './node-patterns.js'
-import { WhiteSpaceToken } from './tokens.js'
 import {
   Node
 , AndExpressionNode
@@ -13,6 +6,7 @@ import {
 , OrExpressionNode
 , XorExpressionNode
 } from './nodes.js'
+import { parseCondition } from './parse-condition.js'
 
 interface IContext {
   tags: string[]
@@ -22,27 +16,13 @@ export async function computeCondition(
   condition: string
 , tags: string[]
 ): Promise<boolean> {
-  const tokens = await pipe(
-    tokenize(tokenPatterns, condition)
-  , iter => filterAsync(iter, isntWhiteSpace)
-  , iter => toArrayAsync(iter)
-  )
-  if (tokens.length === 0) return false
-
-  const nodes = await toArrayAsync(parse(nodePatterns, tokens))
-  assert(nodes.length === 1, 'The condition contains an invalid expression')
-
-  const [node] = nodes
-  const context: IContext = { tags }
-  return computeNode(context, node)
-}
-
-function isWhiteSpace(token: IToken): token is WhiteSpaceToken {
-  return token.tokenType === 'WhiteSpace'
-}
-
-function isntWhiteSpace<T extends IToken>(token: T): token is Exclude<T, WhiteSpaceToken> {
-  return !isWhiteSpace(token)
+  const node = await parseCondition(condition)
+  if (node) {
+    const context: IContext = { tags }
+    return computeNode(context, node)
+  } else {
+    return false
+  }
 }
 
 function computeNode(context: IContext, node: Node): boolean {

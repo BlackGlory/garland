@@ -47,6 +47,8 @@ describe('computeCondition', () => {
 
     expect(await computeCondition(condition, [])).toBe(true)
     expect(await computeCondition(condition, ['a'])).toBe(false)
+    expect(await computeCondition(condition, ['a', 'b'])).toBe(false)
+    expect(await computeCondition(condition, ['b'])).toBe(true)
   })
 
   test('parenthesis', async () => {
