@@ -9,7 +9,7 @@ import {
 , WhiteSpaceToken
 , LeftParenthesisToken
 , RightParenthesisToken
-} from './tokens'
+} from './tokens.js'
 
 export const tokenPatterns: Array<ITokenPattern<Token>> = []
 

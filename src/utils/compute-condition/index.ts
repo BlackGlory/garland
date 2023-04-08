@@ -2,9 +2,9 @@ import { assert } from '@blackglory/prelude'
 import { tokenize, parse, IToken } from 'extra-parser'
 import { toArrayAsync, filterAsync } from 'iterable-operator'
 import { pipe } from 'extra-utils'
-import { tokenPatterns } from './token-patterns'
-import { nodePatterns } from './node-patterns'
-import { WhiteSpaceToken } from './tokens'
+import { tokenPatterns } from './token-patterns.js'
+import { nodePatterns } from './node-patterns.js'
+import { WhiteSpaceToken } from './tokens.js'
 import {
   Node
 , AndExpressionNode
@@ -12,7 +12,7 @@ import {
 , NotExpressionNode
 , OrExpressionNode
 , XorExpressionNode
-} from './nodes'
+} from './nodes.js'
 
 interface IContext {
   tags: string[]

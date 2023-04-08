@@ -1,4 +1,4 @@
-import { getTagStats } from '@commands/tags'
+import { getTagStats } from '@commands/tags.js'
 
 test('getTagStats', () => {
   const tagDefinitions: Record<string, string[]> = {

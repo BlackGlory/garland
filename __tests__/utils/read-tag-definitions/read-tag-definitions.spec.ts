@@ -1,5 +1,8 @@
-import { readTagDefinitions } from '@utils/read-tag-definitions'
-import * as path from 'path'
+import { readTagDefinitions } from '@utils/read-tag-definitions.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 describe('readTagDefinitions', () => {
   test('nested tag definitions', async () => {

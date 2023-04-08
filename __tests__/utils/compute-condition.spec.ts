@@ -1,4 +1,4 @@
-import { computeCondition } from '@utils/compute-condition'
+import { computeCondition } from '@utils/compute-condition/index.js'
 
 describe('computeCondition', () => {
   test('empty', async () => {

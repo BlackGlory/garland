@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises'
 import * as YAML from 'js-yaml'
-import { validateBlueprint } from '@utils/validate-blueprint'
+import { validateBlueprint } from '@utils/validate-blueprint.js'
 import { toArray } from 'iterable-operator'
 import { isNull } from '@blackglory/prelude'
 import * as path from 'path'

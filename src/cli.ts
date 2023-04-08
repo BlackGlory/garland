@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import { program } from 'commander'
-import { build } from '@commands/build'
-import { tags } from '@commands/tags'
-import { test } from '@commands/test'
+import { build } from '@commands/build.js'
+import { tags } from '@commands/tags.js'
+import { test } from '@commands/test.js'
+import { name, version, description } from '@utils/package.js'
 
 interface IGlobalOptions {
   tagDefinitions: string
 }
 
-const { name, version, description } = require('../package.json')
 process.title = name
 
 program

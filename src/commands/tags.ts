@@ -1,4 +1,4 @@
-import { readTagDefinitions } from '@utils/read-tag-definitions'
+import { readTagDefinitions } from '@utils/read-tag-definitions.js'
 import { compareNumbersDescending } from 'extra-sort'
 
 export async function tags({ tagDefinitionsFilename }: {

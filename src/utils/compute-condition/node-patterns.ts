@@ -6,7 +6,7 @@ import {
 , createValueExpressionNodePattern
 , matchAnyOf
 } from 'extra-parser'
-import { Token } from './tokens'
+import { Token } from './tokens.js'
 import {
   Node
 , IdentifierExpressionNode
@@ -14,7 +14,7 @@ import {
 , XorExpressionNode
 , AndExpressionNode
 , NotExpressionNode
-} from './nodes'
+} from './nodes.js'
 
 // 模式解析的顺序将决定运算符的优先级, 这与运算符的优先级顺序相反:
 // 运算符的优先级越低, 它在AST里的位置距离根节点就越近.

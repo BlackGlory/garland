@@ -1,6 +1,6 @@
 import Ajv from 'ajv/dist/2020.js'
 
-const ajv = new Ajv()
+const ajv = new Ajv.default()
 const schema = {
   $ref: '#/$defs/path'
 , $defs: {

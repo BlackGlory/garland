@@ -1,5 +1,8 @@
-import { readBlueprint } from '@utils/read-blueprint'
+import { readBlueprint } from '@utils/read-blueprint.js'
 import * as path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 describe('readBlueprint', () => {
   test('nested blueprint', async () => {
