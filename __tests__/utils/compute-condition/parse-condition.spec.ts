@@ -1,101 +1,273 @@
 import { parseCondition } from '@utils/compute-condition/parse-condition.js'
+import { getErrorPromise } from 'return-style'
 
 describe('parseCondition', () => {
-  test('empty', async () => {
-    const condition = ''
+  describe('empty', () => {
+    test('without whitespaces', async () => {
+      const condition = ''
 
-    const result = await parseCondition(condition)
+      const result = await parseCondition(condition)
 
-    expect(result).toBe(null)
-  })
+      expect(result).toBe(null)
+    })
 
-  test('tag', async () => {
-    const condition = 'a'
+    test('edge case: with whitespaces', async () => {
+      const condition = '  '
 
-    const result = await parseCondition(condition)
+      const result = await parseCondition(condition)
 
-    expect(result).toStrictEqual({
-      nodeType: 'IdentifierExpression'
-    , value: 'a'
+      expect(result).toBe(null)
     })
   })
 
-  test('and', async () => {
-    const condition = 'a and b'
+  describe('tag', () => {
+    test('general', async () => {
+      const condition = 'a'
 
-    const result = await parseCondition(condition)
+      const result = await parseCondition(condition)
 
-    expect(result).toStrictEqual({
-      nodeType: 'AndExpression'
-    , left: {
+      expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
       , value: 'a'
-      }
-    , right: {
-        nodeType: 'IdentifierExpression'
-      , value: 'b'
-      }
+      })
     })
-  })
 
-  test('or', async () => {
-    const condition = 'a or b'
+    test('edge case: with whitespaces', async () => {
+      const condition = '  a  '
 
-    const result = await parseCondition(condition)
+      const result = await parseCondition(condition)
 
-    expect(result).toStrictEqual({
-      nodeType: 'OrExpression'
-    , left: {
+      expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
       , value: 'a'
-      }
-    , right: {
-        nodeType: 'IdentifierExpression'
-      , value: 'b'
-      }
+      })
     })
   })
 
-  test('xor', async () => {
-    const condition = 'a xor b'
+  describe('and', () => {
+    test('general', async () => {
+      const condition = 'a and b'
 
-    const result = await parseCondition(condition)
+      const result = await parseCondition(condition)
 
-    expect(result).toStrictEqual({
-      nodeType: 'XorExpression'
-    , left: {
+      expect(result).toStrictEqual({
+        nodeType: 'AndExpression'
+      , left: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'b'
+        }
+      })
+    })
+
+    test('edge case: with more than one whitespaces', async () => {
+      const condition = 'a  and  b'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'AndExpression'
+      , left: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'b'
+        }
+      })
+    })
+
+    test('edge case: missing left whitespaces', async () => {
+      const condition = 'aand b'
+
+      const err = await getErrorPromise(parseCondition(condition))
+
+      expect(err).toBeInstanceOf(Error)
+    })
+
+    test('edge case: missing right whitespaces', async () => {
+      const condition = 'a andb'
+
+      const err = await getErrorPromise(parseCondition(condition))
+
+      expect(err).toBeInstanceOf(Error)
+    })
+  })
+
+  describe('or', () => {
+    test('general', async () => {
+      const condition = 'a or b'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'OrExpression'
+      , left: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'b'
+        }
+      })
+    })
+
+    test('edge case: with more than one whitespaces', async () => {
+      const condition = 'a  or  b'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'OrExpression'
+      , left: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'b'
+        }
+      })
+    })
+
+    test('edge case: missing left whitespaces', async () => {
+      const condition = 'aor b'
+
+      const err = await getErrorPromise(parseCondition(condition))
+
+      expect(err).toBeInstanceOf(Error)
+    })
+
+    test('edge case: missing right whitespaces', async () => {
+      const condition = 'a orb'
+
+      const err = await getErrorPromise(parseCondition(condition))
+
+      expect(err).toBeInstanceOf(Error)
+    })
+  })
+
+  describe('xor', () => {
+    test('general', async () => {
+      const condition = 'a xor b'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'XorExpression'
+      , left: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'b'
+        }
+      })
+    })
+
+    test('edge case: with more than one whitespaces', async () => {
+      const condition = 'a  xor  b'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'XorExpression'
+      , left: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'b'
+        }
+      })
+    })
+
+    test('edge case: missing left whitespaces', async () => {
+      const condition = 'axor b'
+
+      const err = await getErrorPromise(parseCondition(condition))
+
+      expect(err).toBeInstanceOf(Error)
+    })
+
+    test('edge case: missing right whitespaces', async () => {
+      const condition = 'a xorb'
+
+      const err = await getErrorPromise(parseCondition(condition))
+
+      expect(err).toBeInstanceOf(Error)
+    })
+  })
+
+  describe('not', () => {
+    test('general', async () => {
+      const condition = 'not a'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'NotExpression'
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      })
+    })
+
+    test('edge case: with more than one whitespaces', async () => {
+      const condition = 'not  a'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'NotExpression'
+      , right: {
+          nodeType: 'IdentifierExpression'
+        , value: 'a'
+        }
+      })
+    })
+
+    test('edge case: missing right whitespaces', async () => {
+      const condition = 'nota'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
+        nodeType: 'IdentifierExpression'
+      , value: 'nota'
+      })
+    })
+  })
+
+  describe('parenthesis', () => {
+    test('general', async () => {
+      const condition = '(a)'
+
+      const result = await parseCondition(condition)
+
+      expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
       , value: 'a'
-      }
-    , right: {
-        nodeType: 'IdentifierExpression'
-      , value: 'b'
-      }
+      })
     })
-  })
 
-  test('not', async () => {
-    const condition = 'not a'
+    test('edge: with whitespaces', async () => {
+      const condition = '(  a  )'
 
-    const result = await parseCondition(condition)
+      const result = await parseCondition(condition)
 
-    expect(result).toStrictEqual({
-      nodeType: 'NotExpression'
-    , right: {
+      expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
       , value: 'a'
-      }
-    })
-  })
-
-  test('parenthesis', async () => {
-    const condition = '(a)'
-
-    const result = await parseCondition(condition)
-
-    expect(result).toStrictEqual({
-      nodeType: 'IdentifierExpression'
-    , value: 'a'
+      })
     })
   })
 

@@ -21,25 +21,25 @@ tokenPatterns.push(whiteSpacePattern)
 
 export const andPattern = createTokenPatternFromRegExp<AndToken>(
   'And'
-, /and/
+, /\s*\band\b\s*/
 ) as ITokenPattern<Token>
 tokenPatterns.push(andPattern)
 
 export const orPattern = createTokenPatternFromRegExp<OrToken>(
   'Or'
-, /or/
+, /\s*\bor\b\s*/
 ) as ITokenPattern<Token>
 tokenPatterns.push(orPattern)
 
 export const notPattern = createTokenPatternFromRegExp<NotToken>(
   'Not'
-, /not/
+, /\s*\bnot\b\s*/
 ) as ITokenPattern<Token>
 tokenPatterns.push(notPattern)
 
 export const xorPattern = createTokenPatternFromRegExp<XorToken>(
   'Xor'
-, /xor/
+, /\s*\bxor\b\s*/
 ) as ITokenPattern<Token>
 tokenPatterns.push(xorPattern)
 
