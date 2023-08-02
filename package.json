@@ -24,7 +24,7 @@
     "test:debug": "cross-env NODE_OPTIONS='--experimental-vm-modules --inspect-brk' jest --runInBand --config jest.config.cjs",
     "dev": "ts-node -r tsconfig-paths/register src/cli.ts",
     "dev:debug": "cross-env NODE_OPTIONS=--inspect-brk ts-node -r tsconfig-paths/register src/cli.ts",
-    "clean": "rimraf lib dist",
+    "clean": "rimraf lib",
     "build": "tsc --project tsconfig.build.json",
     "smoke": "node lib/cli.js --help",
     "release": "standard-version"
