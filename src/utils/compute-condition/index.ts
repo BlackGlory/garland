@@ -12,11 +12,11 @@ interface IContext {
   tags: string[]
 }
 
-export async function computeCondition(
+export function computeCondition(
   condition: string
 , tags: string[]
-): Promise<boolean> {
-  const node = await parseCondition(condition)
+): boolean {
+  const node = parseCondition(condition)
   if (node) {
     const context: IContext = { tags }
     return computeNode(context, node)

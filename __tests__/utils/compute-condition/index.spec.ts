@@ -1,80 +1,80 @@
 import { computeCondition } from '@utils/compute-condition/index.js'
 
 describe('computeCondition', () => {
-  test('empty', async () => {
+  test('empty', () => {
     const condition = ''
 
-    expect(await computeCondition(condition, [])).toBe(false)
+    expect(computeCondition(condition, [])).toBe(false)
   })
 
-  test('tag', async () => {
+  test('tag', () => {
     const condition = 'a'
 
-    expect(await computeCondition(condition, [])).toBe(false)
-    expect(await computeCondition(condition, ['a'])).toBe(true)
-    expect(await computeCondition(condition, ['a', 'b'])).toBe(true)
+    expect(computeCondition(condition, [])).toBe(false)
+    expect(computeCondition(condition, ['a'])).toBe(true)
+    expect(computeCondition(condition, ['a', 'b'])).toBe(true)
   })
 
-  test('and', async () => {
+  test('and', () => {
     const condition = 'a and b'
 
-    expect(await computeCondition(condition, [])).toBe(false)
-    expect(await computeCondition(condition, ['a'])).toBe(false)
-    expect(await computeCondition(condition, ['b'])).toBe(false)
-    expect(await computeCondition(condition, ['a', 'b'])).toBe(true)
+    expect(computeCondition(condition, [])).toBe(false)
+    expect(computeCondition(condition, ['a'])).toBe(false)
+    expect(computeCondition(condition, ['b'])).toBe(false)
+    expect(computeCondition(condition, ['a', 'b'])).toBe(true)
   })
 
-  test('or', async () => {
+  test('or', () => {
     const condition = 'a or b'
 
-    expect(await computeCondition(condition, [])).toBe(false)
-    expect(await computeCondition(condition, ['a'])).toBe(true)
-    expect(await computeCondition(condition, ['b'])).toBe(true)
-    expect(await computeCondition(condition, ['a', 'b'])).toBe(true)
+    expect(computeCondition(condition, [])).toBe(false)
+    expect(computeCondition(condition, ['a'])).toBe(true)
+    expect(computeCondition(condition, ['b'])).toBe(true)
+    expect(computeCondition(condition, ['a', 'b'])).toBe(true)
   })
 
-  test('xor', async () => {
+  test('xor', () => {
     const condition = 'a xor b'
 
-    expect(await computeCondition(condition, [])).toBe(false)
-    expect(await computeCondition(condition, ['a'])).toBe(true)
-    expect(await computeCondition(condition, ['b'])).toBe(true)
-    expect(await computeCondition(condition, ['a', 'b'])).toBe(false)
+    expect(computeCondition(condition, [])).toBe(false)
+    expect(computeCondition(condition, ['a'])).toBe(true)
+    expect(computeCondition(condition, ['b'])).toBe(true)
+    expect(computeCondition(condition, ['a', 'b'])).toBe(false)
   })
 
-  test('not', async () => {
+  test('not', () => {
     const condition = 'not a'
 
-    expect(await computeCondition(condition, [])).toBe(true)
-    expect(await computeCondition(condition, ['a'])).toBe(false)
-    expect(await computeCondition(condition, ['a', 'b'])).toBe(false)
-    expect(await computeCondition(condition, ['b'])).toBe(true)
+    expect(computeCondition(condition, [])).toBe(true)
+    expect(computeCondition(condition, ['a'])).toBe(false)
+    expect(computeCondition(condition, ['a', 'b'])).toBe(false)
+    expect(computeCondition(condition, ['b'])).toBe(true)
   })
 
-  test('parenthesis', async () => {
+  test('parenthesis', () => {
     const condition = '(a)'
 
-    expect(await computeCondition(condition, [])).toBe(false)
-    expect(await computeCondition(condition, ['a'])).toBe(true)
+    expect(computeCondition(condition, [])).toBe(false)
+    expect(computeCondition(condition, ['a'])).toBe(true)
   })
 
   describe('operator precedence', () => {
-    test('without parenthesis', async () => {
+    test('without parenthesis', () => {
       const condition = 'a xor b and c'
 
-      expect(await computeCondition(condition, ['a'])).toBe(true)
-      expect(await computeCondition(condition, ['a', 'b'])).toBe(true)
-      expect(await computeCondition(condition, ['a', 'c'])).toBe(true)
-      expect(await computeCondition(condition, ['a', 'b', 'c'])).toBe(false)
+      expect(computeCondition(condition, ['a'])).toBe(true)
+      expect(computeCondition(condition, ['a', 'b'])).toBe(true)
+      expect(computeCondition(condition, ['a', 'c'])).toBe(true)
+      expect(computeCondition(condition, ['a', 'b', 'c'])).toBe(false)
     })
 
-    test('with parenthesis', async () => {
+    test('with parenthesis', () => {
       const condition = '(a xor b) and c'
 
-      expect(await computeCondition(condition, ['a'])).toBe(false)
-      expect(await computeCondition(condition, ['a', 'b'])).toBe(false)
-      expect(await computeCondition(condition, ['a', 'c'])).toBe(true)
-      expect(await computeCondition(condition, ['a', 'b', 'c'])).toBe(false)
+      expect(computeCondition(condition, ['a'])).toBe(false)
+      expect(computeCondition(condition, ['a', 'b'])).toBe(false)
+      expect(computeCondition(condition, ['a', 'c'])).toBe(true)
+      expect(computeCondition(condition, ['a', 'b', 'c'])).toBe(false)
     })
   })
 })

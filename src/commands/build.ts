@@ -24,7 +24,7 @@ export async function build({
     await ensureDir(targetPathname)
 
     for (const [sourcePathname, tags] of Object.entries(tagDefinintions)) {
-      if (await computeCondition(condition, tags)) {
+      if (computeCondition(condition, tags)) {
         try {
           const pathname = path.join(targetPathname, path.basename(sourcePathname))
           await fs.symlink(sourcePathname, pathname)

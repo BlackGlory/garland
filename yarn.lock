@@ -2303,13 +2303,12 @@ extra-lazy@^2.0.1:
   dependencies:
     extra-utils "^5.1.0"
 
-extra-parser@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/extra-parser/-/extra-parser-0.6.3.tgz#9630633566a5521bdc0085f771c09abed5685182"
-  integrity sha512-QCURdX0xByDFWJIDdq4uzf0ItEdf92WDiKD4SmTffhjJoXsn2tlylIMdG8RByxqXXVcaZK97WwS3WA0g9OsPiQ==
+extra-parser@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/extra-parser/-/extra-parser-0.7.0.tgz#557db155c466f9db6cf558d19903b9354eedf35d"
+  integrity sha512-D3v7nCDeLp1aO7DFA3BnxcCsDOZMF22abMQjKe57Pkm1VbiCs6RNfSYYayWbe9bzNoMj3ON4tPx7greOB4OkZw==
   dependencies:
     "@blackglory/prelude" "^0.1.8"
-    hotypes "^0.5.1"
     iterable-operator "^2.3.0"
 
 extra-promise@^4.1.0:
@@ -2781,11 +2780,6 @@ hotypes@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/hotypes/-/hotypes-0.5.0.tgz#4d7530364047308eb380e7b2b42fc817bbb83bb8"
   integrity sha512-7Gfhv381b/5FkYspmHd32opvVUeMhPrLP1ypX8qPP1lDW4BFUphdiLBPEq8GKc+fb7DaLVyQgDO4mjz1RBT17w==
-
-hotypes@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/hotypes/-/hotypes-0.5.1.tgz#5c9bca641b0343e34ea86119f56e89261677482e"
-  integrity sha512-qPtJGddfXlUgD9WEKBO4IBNcWUlMicwvh1JFf/6MvPghpsMOqmE0XC9XEdqiIKvMSMpv6Z2EZPz86c3hmJqoog==
 
 hotypes@^0.6.1:
   version "0.6.1"

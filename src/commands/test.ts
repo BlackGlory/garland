@@ -11,7 +11,7 @@ export async function test({
   const tagDefinintions = await readTagDefinitions(tagDefinitionsFilename)
 
   for (const [pathname, tags] of Object.entries(tagDefinintions)) {
-    if (await computeCondition(conditionExpression, tags)) {
+    if (computeCondition(conditionExpression, tags)) {
       console.log(pathname)
     }
   }

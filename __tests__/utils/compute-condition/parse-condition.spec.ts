@@ -1,30 +1,30 @@
 import { parseCondition } from '@utils/compute-condition/parse-condition.js'
-import { getErrorPromise } from 'return-style'
+import { getError } from 'return-style'
 
 describe('parseCondition', () => {
   describe('empty', () => {
-    test('without whitespaces', async () => {
+    test('without whitespaces', () => {
       const condition = ''
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toBe(null)
     })
 
-    test('edge case: with whitespaces', async () => {
+    test('edge case: with whitespaces', () => {
       const condition = '  '
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toBe(null)
     })
   })
 
   describe('tag', () => {
-    test('general', async () => {
+    test('general', () => {
       const condition = 'a'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
@@ -32,10 +32,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: with whitespaces', async () => {
+    test('edge case: with whitespaces', () => {
       const condition = '  a  '
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
@@ -45,10 +45,10 @@ describe('parseCondition', () => {
   })
 
   describe('and', () => {
-    test('general', async () => {
+    test('general', () => {
       const condition = 'a and b'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'AndExpression'
@@ -63,10 +63,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: with more than one whitespaces', async () => {
+    test('edge case: with more than one whitespaces', () => {
       const condition = 'a  and  b'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'AndExpression'
@@ -81,28 +81,28 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: missing left whitespaces', async () => {
+    test('edge case: missing left whitespaces', () => {
       const condition = 'aand b'
 
-      const err = await getErrorPromise(parseCondition(condition))
+      const err = getError(() => parseCondition(condition))
 
       expect(err).toBeInstanceOf(Error)
     })
 
-    test('edge case: missing right whitespaces', async () => {
+    test('edge case: missing right whitespaces', () => {
       const condition = 'a andb'
 
-      const err = await getErrorPromise(parseCondition(condition))
+      const err = getError(() => parseCondition(condition))
 
       expect(err).toBeInstanceOf(Error)
     })
   })
 
   describe('or', () => {
-    test('general', async () => {
+    test('general', () => {
       const condition = 'a or b'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'OrExpression'
@@ -117,10 +117,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: with more than one whitespaces', async () => {
+    test('edge case: with more than one whitespaces', () => {
       const condition = 'a  or  b'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'OrExpression'
@@ -135,28 +135,28 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: missing left whitespaces', async () => {
+    test('edge case: missing left whitespaces', () => {
       const condition = 'aor b'
 
-      const err = await getErrorPromise(parseCondition(condition))
+      const err = getError(() => parseCondition(condition))
 
       expect(err).toBeInstanceOf(Error)
     })
 
-    test('edge case: missing right whitespaces', async () => {
+    test('edge case: missing right whitespaces', () => {
       const condition = 'a orb'
 
-      const err = await getErrorPromise(parseCondition(condition))
+      const err = getError(() => parseCondition(condition))
 
       expect(err).toBeInstanceOf(Error)
     })
   })
 
   describe('xor', () => {
-    test('general', async () => {
+    test('general', () => {
       const condition = 'a xor b'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'XorExpression'
@@ -171,10 +171,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: with more than one whitespaces', async () => {
+    test('edge case: with more than one whitespaces', () => {
       const condition = 'a  xor  b'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'XorExpression'
@@ -189,28 +189,28 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: missing left whitespaces', async () => {
+    test('edge case: missing left whitespaces', () => {
       const condition = 'axor b'
 
-      const err = await getErrorPromise(parseCondition(condition))
+      const err = getError(() => parseCondition(condition))
 
       expect(err).toBeInstanceOf(Error)
     })
 
-    test('edge case: missing right whitespaces', async () => {
+    test('edge case: missing right whitespaces', () => {
       const condition = 'a xorb'
 
-      const err = await getErrorPromise(parseCondition(condition))
+      const err = getError(() => parseCondition(condition))
 
       expect(err).toBeInstanceOf(Error)
     })
   })
 
   describe('not', () => {
-    test('general', async () => {
+    test('general', () => {
       const condition = 'not a'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'NotExpression'
@@ -221,10 +221,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: with more than one whitespaces', async () => {
+    test('edge case: with more than one whitespaces', () => {
       const condition = 'not  a'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'NotExpression'
@@ -235,10 +235,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge case: missing right whitespaces', async () => {
+    test('edge case: missing right whitespaces', () => {
       const condition = 'nota'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
@@ -248,10 +248,10 @@ describe('parseCondition', () => {
   })
 
   describe('parenthesis', () => {
-    test('general', async () => {
+    test('general', () => {
       const condition = '(a)'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
@@ -259,10 +259,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('edge: with whitespaces', async () => {
+    test('edge: with whitespaces', () => {
       const condition = '(  a  )'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'IdentifierExpression'
@@ -272,10 +272,10 @@ describe('parseCondition', () => {
   })
 
   describe('operator precedence', () => {
-    test('without parenthesis', async () => {
+    test('without parenthesis', () => {
       const condition = 'a xor b and c'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'XorExpression'
@@ -297,10 +297,10 @@ describe('parseCondition', () => {
       })
     })
 
-    test('with parenthesis', async () => {
+    test('with parenthesis', () => {
       const condition = '(a xor b) and c'
 
-      const result = await parseCondition(condition)
+      const result = parseCondition(condition)
 
       expect(result).toStrictEqual({
         nodeType: 'AndExpression'

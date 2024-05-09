@@ -62,7 +62,7 @@
     "ajv": "^8.12.0",
     "commander": "^10.0.0",
     "extra-filesystem": "^0.5.0",
-    "extra-parser": "^0.6.3",
+    "extra-parser": "^0.7.0",
     "extra-sort": "^0.1.1",
     "extra-utils": "^5.1.1",
     "iterable-operator": "^4.0.6",

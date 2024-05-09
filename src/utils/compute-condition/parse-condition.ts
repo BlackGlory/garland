@@ -2,20 +2,20 @@ import { WhiteSpaceToken } from './tokens.js'
 import { Node } from './nodes.js'
 import { assert } from '@blackglory/prelude'
 import { tokenize, parse, IToken } from 'extra-parser'
-import { toArrayAsync, filterAsync } from 'iterable-operator'
+import { toArray, filter } from 'iterable-operator'
 import { pipe } from 'extra-utils'
 import { tokenPatterns } from './token-patterns.js'
 import { nodePatterns } from './node-patterns.js'
 
-export async function parseCondition(condition: string): Promise<Node | null> {
-  const tokens = await pipe(
+export function parseCondition(condition: string): Node | null {
+  const tokens = pipe(
     tokenize(tokenPatterns, condition)
-  , iter => filterAsync(iter, isntWhiteSpace)
-  , iter => toArrayAsync(iter)
+  , iter => filter(iter, isntWhiteSpace)
+  , iter => toArray(iter)
   )
   if (tokens.length === 0) return null
 
-  const nodes = await toArrayAsync(parse(nodePatterns, tokens))
+  const nodes = toArray(parse(nodePatterns, tokens))
   assert(nodes.length === 1, 'The condition contains an invalid expression')
 
   const [node] = nodes
