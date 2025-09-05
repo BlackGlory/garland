@@ -1,4 +1,5 @@
 import Ajv from 'ajv/dist/2020.js'
+import { ITagDefinitions } from './read-tag-definitions.js'
 
 const ajv = new Ajv.default()
 const schema = {
@@ -20,7 +21,7 @@ const schema = {
   }
 }
 
-export function validateTagDefinitions(data: unknown): void {
+export function validateTagDefinitions(data: unknown): asserts data is ITagDefinitions {
   const valid = ajv.validate(schema, data)
   if (!valid) throw new Error(ajv.errorsText())
 }

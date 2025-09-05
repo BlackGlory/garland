@@ -5,7 +5,7 @@ import { isArray } from '@blackglory/prelude'
 import { toArray } from 'iterable-operator'
 import * as path from 'path'
 
-interface ITagDefinitions {
+export interface ITagDefinitions {
   [path: string]: string[] | ITagDefinitions
 }
 
@@ -14,8 +14,10 @@ export async function readTagDefinitions(
 ): Promise<Record<string, string[]>> {
   const text = await fs.readFile(filename, 'utf-8')
   const data = YAML.load(text)
+
   validateTagDefinitions(data)
-  return flatTagDefinitions(data as ITagDefinitions)
+
+  return flatTagDefinitions(data)
 }
 
 function flatTagDefinitions(

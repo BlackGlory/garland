@@ -1,4 +1,5 @@
 import Ajv from 'ajv/dist/2020.js'
+import { IBlueprint } from './read-blueprint.js'
 
 const ajv = new Ajv.default()
 const schema = {
@@ -19,7 +20,7 @@ const schema = {
   }
 }
 
-export function validateBlueprint(data: unknown): void {
+export function validateBlueprint(data: unknown): asserts data is IBlueprint {
   const valid = ajv.validate(schema, data)
   if (!valid) throw new Error(ajv.errorsText())
 }

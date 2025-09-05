@@ -5,7 +5,7 @@ import { toArray } from 'iterable-operator'
 import { isNull } from '@blackglory/prelude'
 import * as path from 'path'
 
-type IBlueprint =
+export type IBlueprint =
 | { $condition?: string }
 | { [path: string]: IBlueprint | null }
 
@@ -14,8 +14,10 @@ export async function readBlueprint(
 ): Promise<Record<string, string>> {
   const text = await fs.readFile(filename, 'utf-8')
   const data = YAML.load(text)
+
   validateBlueprint(data)
-  return flatBlueprint(data as IBlueprint)
+
+  return flatBlueprint(data)
 }
 
 function flatBlueprint(
