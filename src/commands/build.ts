@@ -1,5 +1,5 @@
 import { readBlueprintFile } from '@utils/read-blueprint-file.js'
-import { readTagDefinitionsFile } from '@utils/read-tag-definitions-file.js'
+import { readTagDefinitionFile } from '@utils/read-tag-definition-file.js'
 import { computeCondition } from '@utils/compute-condition/index.js'
 import { ensureDir } from 'extra-filesystem'
 import { mapKeys } from '@utils/map-keys.js'
@@ -16,7 +16,7 @@ export async function build({
 }): Promise<void> {
   const blueprint = await readBlueprintFile(blueprintFilename)
   const tagDefinintions = mapKeys(
-    await readTagDefinitionsFile(tagDefinitionsFilename)
+    await readTagDefinitionFile(tagDefinitionsFilename)
   , pathname => path.join(path.dirname(tagDefinitionsFilename), pathname)
   )
 

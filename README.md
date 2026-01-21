@@ -16,7 +16,7 @@ A folder hierarchy builder based on tags and symbolic links
 
 Options:
   -V, --version                 output the version number
-  --tag-definitions <filename>  tag definitions file
+  --tag-definitions <filename>  tag definition file
   -h, --help                    display help for command
 
 Commands:

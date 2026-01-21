@@ -15,7 +15,7 @@ program
   .name(name)
   .version(version)
   .description(description)
-  .requiredOption('--tag-definitions <filename>', 'tag definitions file')
+  .requiredOption('--tag-definitions <filename>', 'tag definition file')
 
 program
   .command('tags')

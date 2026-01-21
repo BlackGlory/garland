@@ -6,7 +6,7 @@ import { toArray } from 'iterable-operator'
 import * as path from 'path'
 import { ITagDefinitions } from './types.js'
 
-export async function readTagDefinitionsFile(
+export async function readTagDefinitionFile(
   filename: string
 ): Promise<Record<string, string[]>> {
   const text = await fs.readFile(filename, 'utf-8')
