@@ -26,11 +26,11 @@ Commands:
   help [command]                display help for command
 ```
 
-## Tag definitions file
-The tag definitions file is a YAML file with path and tag pairs.
+## Tag definition file
+The tag definition file is a YAML file with path and tag pairs.
 
 When used in the `garland build`,
-the path in the tag definitions file is relative to the path of the file.
+the path in the tag definition file is relative to the path of the file.
 
 Structure:
 ```ts
