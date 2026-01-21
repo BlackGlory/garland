@@ -1,10 +1,10 @@
-import { readTagDefinitions } from '@utils/read-tag-definitions.js'
+import { readTagDefinitionsFile } from '@utils/read-tag-definitions-file.js'
 import { compareNumbersDescending } from 'extra-sort'
 
 export async function tags({ tagDefinitionsFilename }: {
   tagDefinitionsFilename: string
 }): Promise<void> {
-  const tagDefinintions = await readTagDefinitions(tagDefinitionsFilename)
+  const tagDefinintions = await readTagDefinitionsFile(tagDefinitionsFilename)
   const tagStats = getTagStats(tagDefinintions)
   const sortedTags = Object.entries(tagStats)
     .map(([name, count]) => ({ name, count }))

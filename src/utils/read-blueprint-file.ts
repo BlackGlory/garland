@@ -4,12 +4,9 @@ import { validateBlueprint } from '@utils/validate-blueprint.js'
 import { toArray } from 'iterable-operator'
 import { isNull } from '@blackglory/prelude'
 import * as path from 'path'
+import { IBlueprint } from './types.js'
 
-export type IBlueprint =
-| { $condition?: string }
-| { [path: string]: IBlueprint | null }
-
-export async function readBlueprint(
+export async function readBlueprintFile(
   filename: string
 ): Promise<Record<string, string>> {
   const text = await fs.readFile(filename, 'utf-8')

@@ -1,5 +1,5 @@
 import Ajv from 'ajv/dist/2020.js'
-import { ITagDefinitions } from './read-tag-definitions.js'
+import { ITagDefinitions } from './types.js'
 
 const ajv = new Ajv.default()
 const schema = {

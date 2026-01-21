@@ -1,12 +1,12 @@
-import { readTagDefinitions } from '@utils/read-tag-definitions.js'
+import { readTagDefinitionsFile } from '@utils/read-tag-definitions-file.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-describe('readTagDefinitions', () => {
+describe('readTagDefinitionsFile', () => {
   test('nested tag definitions', async () => {
-    const tags = await readTagDefinitions(getFixtureFilename('nested-tag-definitions.yaml'))
+    const tags = await readTagDefinitionsFile(getFixtureFilename('nested-tag-definitions.yaml'))
 
     expect(tags).toStrictEqual({
       [path.normalize('example1.com/owner1/repo1')]: ['tag1', 'tag2']
@@ -16,7 +16,7 @@ describe('readTagDefinitions', () => {
   })
 
   test('flat tag definitions', async () => {
-    const tags = await readTagDefinitions(getFixtureFilename('flat-tag-definitions.yaml'))
+    const tags = await readTagDefinitionsFile(getFixtureFilename('flat-tag-definitions.yaml'))
 
     expect(tags).toStrictEqual({
       [path.normalize('example1.com/owner1/repo1')]: ['tag1', 'tag2']

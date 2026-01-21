@@ -4,12 +4,9 @@ import { validateTagDefinitions } from '@utils/validate-tag-definitions.js'
 import { isArray } from '@blackglory/prelude'
 import { toArray } from 'iterable-operator'
 import * as path from 'path'
+import { ITagDefinitions } from './types.js'
 
-export interface ITagDefinitions {
-  [path: string]: string[] | ITagDefinitions
-}
-
-export async function readTagDefinitions(
+export async function readTagDefinitionsFile(
   filename: string
 ): Promise<Record<string, string[]>> {
   const text = await fs.readFile(filename, 'utf-8')

@@ -1,12 +1,12 @@
-import { readBlueprint } from '@utils/read-blueprint.js'
+import { readBlueprintFile } from '@utils/read-blueprint-file.js'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-describe('readBlueprint', () => {
+describe('readBlueprintFile', () => {
   test('nested blueprint', async () => {
-    const blueprint = await readBlueprint(getFixtureFilename('nested-blueprint.yaml'))
+    const blueprint = await readBlueprintFile(getFixtureFilename('nested-blueprint.yaml'))
 
     expect(blueprint).toStrictEqual({
       [path.normalize('no-subpath')]: 'condition'
@@ -19,7 +19,7 @@ describe('readBlueprint', () => {
   })
 
   test('flat blueprint', async () => {
-    const blueprint = await readBlueprint(getFixtureFilename('flat-blueprint.yaml'))
+    const blueprint = await readBlueprintFile(getFixtureFilename('flat-blueprint.yaml'))
 
     expect(blueprint).toStrictEqual({
       [path.normalize('no-subpath')]: 'condition'
@@ -29,7 +29,7 @@ describe('readBlueprint', () => {
   })
 
   test('top-level $condition', async () => {
-    const blueprint = await readBlueprint(getFixtureFilename('top-level-condition.yaml'))
+    const blueprint = await readBlueprintFile(getFixtureFilename('top-level-condition.yaml'))
 
     expect(blueprint).toStrictEqual({
       [path.normalize('path')]: 'condition'

@@ -1,5 +1,5 @@
 import Ajv from 'ajv/dist/2020.js'
-import { IBlueprint } from './read-blueprint.js'
+import { IBlueprint } from './types.js'
 
 const ajv = new Ajv.default()
 const schema = {
