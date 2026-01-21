@@ -3,11 +3,14 @@
   "version": "0.2.0",
   "description": "A folder hierarchy builder based on tags and symbolic links",
   "keywords": [],
-  "type": "module",
-  "bin": "lib/cli.js",
   "files": [
+    "src",
     "lib"
   ],
+  "type": "module",
+  "bin": "lib/cli.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "engines": {
     "node": ">=16"
   },

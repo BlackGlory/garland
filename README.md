@@ -8,7 +8,7 @@ npm install --global garland
 yarn add garland
 ```
 
-## Usage
+## CLI Usage
 ```
 Usage: garland [options] [command]
 
@@ -150,3 +150,9 @@ The tags used by garland should follow minimalism:
 - If you don't use the tag, there is no reason to remain it.
 - Do not use tags as a kind of *notes* or *comments*.
 - Only add the tags you will use in garland to avoid the number of tags growing to the point of being unmanageable.
+
+## API
+### readTagDefinitionFile
+```ts
+function readTagDefinitionFile(filename: string): Promise<Record<string, string[]>>
+```

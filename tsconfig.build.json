@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.base.json"
 , "compilerOptions": {
-    "sourceMap": true
+    "declaration": true
+  , "removeComments": false
+  , "sourceMap": true
   , "outDir": "lib"
   }
 , "include": [
