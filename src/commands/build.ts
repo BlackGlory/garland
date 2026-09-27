@@ -25,13 +25,15 @@ export async function build({
 
     for (const [sourcePathname, tags] of Object.entries(tagDefinintions)) {
       if (computeCondition(condition, tags)) {
+        const pathname = path.join(targetPathname, path.basename(sourcePathname))
+
         try {
-          const pathname = path.join(targetPathname, path.basename(sourcePathname))
           await fs.symlink(sourcePathname, pathname)
+
           console.log(`${pathname}: linked`)
         } catch (e) {
           if (isObject(e) && e.code === 'EEXIST') {
-            console.log(`${targetPathname}: already exists`)
+            console.log(`${pathname}: already exists`)
           } else {
             throw e
           }
