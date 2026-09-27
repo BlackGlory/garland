@@ -20,20 +20,20 @@ export async function build({
   , pathname => path.join(path.dirname(tagDefinitionsFilename), pathname)
   )
 
-  for (const [targetPathname, condition] of Object.entries(blueprint)) {
-    await ensureDir(targetPathname)
+  for (const [dirname, condition] of Object.entries(blueprint)) {
+    await ensureDir(dirname)
 
     for (const [sourcePathname, tags] of Object.entries(tagDefinintions)) {
       if (computeCondition(condition, tags)) {
-        const pathname = path.join(targetPathname, path.basename(sourcePathname))
+        const destinationPathname = path.join(dirname, path.basename(sourcePathname))
 
         try {
-          await fs.symlink(sourcePathname, pathname)
+          await fs.symlink(sourcePathname, destinationPathname)
 
-          console.log(`${pathname}: linked`)
+          console.log(`${destinationPathname}: linked`)
         } catch (e) {
           if (isObject(e) && e.code === 'EEXIST') {
-            console.log(`${pathname}: already exists`)
+            console.log(`${destinationPathname}: already exists`)
           } else {
             throw e
           }
